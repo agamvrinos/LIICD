@@ -1,5 +1,11 @@
 from datasketch import MinHash, MinHashLSH
+from CodebaseReader import CodebaseReader
+from pathlib2 import Path
 
+codebase = CodebaseReader(Path.home() / 'PycharmProjects/CloneDetector/data/test_project')
+files = codebase.get_files()
+for f in files:
+    print(f)
 
 set1 = {
     'import java.lang.*;',
