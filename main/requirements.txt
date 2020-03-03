@@ -1,2 +1,2 @@
 datasketch==1.5.0
-pathlib2==2.3.5
+pathlib==1.0.1

@@ -1,2 +1,3 @@
-main/venv/
+venv/
 .idea/
+*.pyc
