@@ -1,5 +1,6 @@
 import os
 
+
 class CodebaseReader:
 
     files = []
@@ -11,9 +12,8 @@ class CodebaseReader:
             for filename in filenames:
                 join = os.path.join(root, filename)
                 self.files.append(join)
-                self.lines_per_file[join] = []
                 lines = self.get_lines_for_file(join)
-                self.lines_per_file.get(join).append(lines)
+                self.lines_per_file[join] = lines
 
     def get__path(self):
         return self.path
