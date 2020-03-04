@@ -2,6 +2,19 @@ import os
 
 
 class CodebaseReader:
+    """
+    Recursively reads all the files under the given path and stores
+    the files themselves as well as the lines corresponding to each file.
+
+    Args:
+        files (str[]): The paths of the files under the root directory
+        lines_per_file (dict): A dictionary with files pointing to the
+        respective lines per file.
+
+    Attributes:
+        path (POSIX Path): The path pointing to the root of the codebase
+        to be read.
+    """
 
     files = []
     lines_per_file = {}
