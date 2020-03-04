@@ -42,6 +42,7 @@ class CodebaseReader:
             lines = []
             for line in fp:
                 line = line.strip()
+                line = " ".join(line.split())
                 if line:
                     lines.append(line)
         return lines
