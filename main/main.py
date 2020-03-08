@@ -37,7 +37,10 @@ print("=========================================================================
 
 clone_index.print_index()
 
+# A hardcoded simulation of a newly added file
+new_file_path = str(Path.home() / 'PycharmProjects/CloneDetector/data/New.java')
+new_file_lines = codebase.get_lines_for_file(new_file_path)
+new_file_index_entries = calculate_index_entries_for_file(new_file_path, new_file_lines)
+
 clone_detector = CloneDetector(clone_index)
-# clone_detector.detect_clones()
-
-
+# clone_detector.detect_clones(new_file_index_entries)
