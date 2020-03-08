@@ -33,7 +33,7 @@ class CloneDetector:
                     if clone_index_entry.get__file_name != self.origin_file_name:
                         group.add_entry(clone_index_entry)
 
-            # TODO: Sort the group for the particular hash key
+                list.sort(group.get__index_entries_group(), key=lambda entry: (entry.get__file_name(), entry.get__statement_index()))
 
         # TODO: For debugging, remove later
         for hash_key in groups_by_hash.keys():
