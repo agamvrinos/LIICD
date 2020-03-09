@@ -9,10 +9,32 @@ class CloneDetector:
         self.origin_file_name = '' # FIXME: dynamically
 
     def detect_clones(self, index_entries):
+        """
+        Detects and reports the clones resulting by the comparison of the passed index_entries
+        and the entries of the existing clone index
 
+        Args:
+            index_entries: index entries of the file to be checked against the existing clone
+            index. Corresponds to "f" in the original paper
+        """
         same_hash_block_groups: List[IndexEntriesGroup] = self.create_groups(index_entries)
 
-        return None
+        for i in range(1, len(same_hash_block_groups)):
+            prev_entries_group: IndexEntriesGroup = same_hash_block_groups[i-1]
+            current_entries_group: IndexEntriesGroup = same_hash_block_groups[i]
+
+            if current_entries_group.get__size() < 2 or current_entries_group.subset_of(prev_entries_group, 1):
+                continue
+
+            active_set: IndexEntriesGroup = current_entries_group
+
+            for j in range(i + 1, len(same_hash_block_groups)):
+                intersection_group: IndexEntriesGroup = active_set.intersect(same_hash_block_groups[j])
+                if intersection_group.get__size() < active_set.get__size():
+                    print("REPORTING CLONES")
+                active_set = intersection_group
+                if active_set.get__size() < 2 or active_set.subset_of(same_hash_block_groups[i - 1], j - i + 1):
+                    break
 
     def create_groups(self, index_entries):
         groups_by_hash: Dict[str, IndexEntriesGroup] = {}

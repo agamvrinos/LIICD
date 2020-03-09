@@ -30,8 +30,8 @@ def test_index():
     test_clone_index.add_index_entry(IndexEntry("A.java", 1, "a11ccfbc32959dbf0e316ac7d1e46d95", 1, 5))
     test_clone_index.add_index_entry(IndexEntry("A.java", 2, "10ead5822589a0b68bbbfec6a1c520af", 2, 6))
 
-    new_file_index_entry_1 = IndexEntry("B.java", 0, "aaaabbbb37cc8122c89d98a51f88084b", 0, 4)
-    new_file_index_entry_2 = IndexEntry("B.java", 1, "398ae43bfd41e541ea738a48aef3669e", 1, 5)
+    new_file_index_entry_1 = IndexEntry("B.java", 0, "398ae43bfd41e541ea738a48aef3669e", 0, 4)
+    new_file_index_entry_2 = IndexEntry("B.java", 1, "aaaabbbb37cc8122c89d98a51f88084b", 1, 5)
     new_file_index_entry_3 = IndexEntry("B.java", 2, "a11ccfbc32959dbf0e316ac7d1e46d95", 2, 6)
 
     detector = CloneDetector(test_clone_index)

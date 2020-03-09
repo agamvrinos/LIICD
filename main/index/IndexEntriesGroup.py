@@ -31,10 +31,11 @@ class IndexEntriesGroup:
         i = 0
         j = 0
         current_group = self.index_entries_group
+        other_group = prev_group.get__index_entries_group()
 
-        while i < len(current_group) and j < len(prev_group):
+        while i < len(current_group) and j < len(other_group):
             current_group_entry = current_group[i]
-            previous_group_entry = prev_group[j]
+            previous_group_entry = other_group[j]
             current_group_entry_filename = current_group_entry.get__file_name()
             previous_group_entry_filename = previous_group_entry.get__file_name()
 
@@ -53,3 +54,36 @@ class IndexEntriesGroup:
                 i += 1
 
         return i == len(current_group)
+
+    def intersect(self, group):
+        i = 0
+        j = 0
+        intersection_group = IndexEntriesGroup()
+        current_group: List[IndexEntry] = self.index_entries_group
+        other_group: List[IndexEntry] = group.get__index_entries_group()
+
+        while i < len(current_group) and j < len(other_group):
+            current_group_entry = current_group[i]
+            other_group_entry = other_group[j]
+            current_group_entry_filename = current_group_entry.get__file_name()
+            other_group_entry_filename = other_group_entry.get__file_name()
+
+            if current_group_entry_filename > other_group_entry_filename:
+                j += 1
+                continue
+            if current_group_entry_filename < other_group_entry_filename:
+                i += 1
+                continue
+
+            idx = current_group_entry.get__statement_index() + 1 - other_group_entry.get__statement_index()
+
+            if idx == 0:
+                i += 1
+                j += 1
+                intersection_group.add_entry(other_group_entry)
+            elif idx > 0:
+                j += 1
+            else:
+                i += 1
+
+        return intersection_group
