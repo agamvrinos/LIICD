@@ -6,7 +6,7 @@ class CloneDetector:
 
     def __init__(self, clone_index):
         self.clone_index = clone_index
-        self.origin_file_name = '' # FIXME: dynamically
+        self.origin_file_name = ''
 
     def detect_clones(self, index_entries):
         """
@@ -17,6 +17,8 @@ class CloneDetector:
             index_entries: index entries of the file to be checked against the existing clone
             index. Corresponds to "f" in the original paper
         """
+        self.origin_file_name = index_entries[0].get__file_name()
+
         same_hash_block_groups: List[IndexEntriesGroup] = self.create_groups(index_entries)
 
         for i in range(1, len(same_hash_block_groups)):
