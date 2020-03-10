@@ -21,6 +21,43 @@ class IndexEntriesGroup:
     def get__size(self):
         return len(self.index_entries_group)
 
+    def get__first(self, filename):
+        for entry in self.index_entries_group:
+            if entry.get__file_name() == filename:
+                return entry
+        return None
+
+    def get__pairs(self, group, length):
+        i = 0
+        j = 0
+        result: List[IndexEntry] = []
+        begin_group: List[IndexEntry] = self.index_entries_group
+        end_group: List[IndexEntry] = group.get__index_entries_group()
+
+        while i < len(begin_group) and j < len(end_group):
+            begin_group_entry: IndexEntry = begin_group[i]
+            end_group_entry: IndexEntry = end_group[j]
+            begin_group_entry_filename = begin_group_entry.get__file_name()
+            end_group_entry_filename = end_group_entry.get__file_name()
+
+            if begin_group_entry_filename > end_group_entry_filename:
+                idx = 1
+            elif begin_group_entry_filename < end_group_entry_filename:
+                idx = -1
+            else:
+                idx = begin_group_entry.get__statement_index() + length - 1 - end_group_entry.get__statement_index()
+
+            if idx == 0:
+                result.append([begin_group_entry, end_group_entry])
+                i += 1
+                j += 1
+            elif idx > 0:
+                j += 1
+            else:
+                i += 1
+
+        return result
+
     def add_entry(self, index_entry):
         self.index_entries_group.append(index_entry)
 
