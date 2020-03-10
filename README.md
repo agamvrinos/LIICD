@@ -1,3 +1,5 @@
+[![BCH compliance](https://bettercodehub.com/edge/badge/agamvrinos/CloneDetector?branch=master)](https://bettercodehub.com/)
+
 # CloneDetector
 
 A Python implementation of an Incremental Clone Detector.
