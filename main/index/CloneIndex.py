@@ -1,7 +1,11 @@
+from typing import Dict, List
+from index.IndexEntry import IndexEntry
+
+
 class CloneIndex:
 
-    index_entries_by_file = {}
-    index_entries_by_hash = {}
+    index_entries_by_file: Dict[str, List[IndexEntry]] = {}
+    index_entries_by_hash: Dict[str, List[IndexEntry]] = {}
 
     def get__index_entries_by_file(self):
         return self.index_entries_by_file
