@@ -1,5 +1,5 @@
 import unittest
-from main.clone.ClonePart import ClonePart
+from detector.clone.ClonePart import ClonePart
 
 
 class TestClonePart(unittest.TestCase):

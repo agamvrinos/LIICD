@@ -1,5 +1,5 @@
 from typing import List
-from index import IndexEntry
+from detector.index.IndexEntry import IndexEntry
 
 
 class IndexEntriesGroup:

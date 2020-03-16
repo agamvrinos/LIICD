@@ -1,6 +1,6 @@
 from typing import List
-from clone.ClonePart import ClonePart
-from clone.CloneGroup import CloneGroup
+from detector.clone import ClonePart
+from detector.clone.CloneGroup import CloneGroup
 
 
 class Filter:
@@ -39,7 +39,7 @@ class Filter:
         return self.contains(first_parts, second_parts, self.NAME_UNIT_COMPARATOR) and \
                self.contains(first_parts, second_parts, self.NAME_COMPARATOR)
 
-    def contains(self, container: List[ClonePart], list1: List[ClonePart], comparator):
+    def contains(self, container, list1, comparator):
         container_index = 0
         list_index = 0
 

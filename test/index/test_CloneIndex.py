@@ -1,6 +1,6 @@
 import unittest
-from main.index.IndexEntry import IndexEntry
-from main.index.CloneIndex import CloneIndex
+from detector.index.IndexEntry import IndexEntry
+from detector.index.CloneIndex import CloneIndex
 
 
 class TestCloneIndex(unittest.TestCase):

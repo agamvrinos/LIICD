@@ -1,5 +1,5 @@
 import unittest
-from main.index.IndexEntry import IndexEntry
+from detector.index.IndexEntry import IndexEntry
 
 
 class TestIndexEntry(unittest.TestCase):

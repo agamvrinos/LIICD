@@ -1,9 +1,9 @@
 from typing import Dict, List
-from index.IndexEntry import IndexEntry
-from index.IndexEntriesGroup import IndexEntriesGroup
-from clone.Filter import Filter
-from clone.CloneGroup import CloneGroup
-from clone.ClonePart import ClonePart
+from detector.index.IndexEntry import IndexEntry
+from detector.index.IndexEntriesGroup import IndexEntriesGroup
+from detector.clone.Filter import Filter
+from detector.clone.CloneGroup import CloneGroup
+from detector.clone.ClonePart import ClonePart
 
 
 class CloneDetector:

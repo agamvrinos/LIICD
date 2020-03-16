@@ -1,5 +1,5 @@
 from typing import Dict, List
-from index.IndexEntry import IndexEntry
+from detector.index.IndexEntry import IndexEntry
 
 
 class CloneIndex:
@@ -16,6 +16,10 @@ class CloneIndex:
     def add_index_entry(self, index_entry):
         self.index_entries_by_file.setdefault(index_entry.get__file_name(), []).append(index_entry)
         self.index_entries_by_hash.setdefault(index_entry.get__sequence_hash(), []).append(index_entry)
+
+    def add_index_entries(self, index_entries):
+        for index_entry in index_entries:
+            self.add_index_entry(index_entry)
 
     def print_index(self):
         for file in self.index_entries_by_file.keys():

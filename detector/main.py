@@ -1,25 +1,8 @@
-from clone.CloneDetector import CloneDetector
-from index.CloneIndex import CloneIndex
-from index.IndexEntry import IndexEntry
-import hashlib
+from detector.clone.CloneDetector import CloneDetector
+from detector.index.CloneIndex import CloneIndex
+from detector.index.IndexEntry import IndexEntry
 
-CHUNK_SIZE = 4
-
-
-def calculate_index_entries_for_file(file, lines):
-    print('============================================================================================================')
-    print('[FILE]: ' + file)
-    index_entries = []
-    for i in range(0, len(lines) - CHUNK_SIZE + 1):
-        print("========================= BLOCK " + str(i) + " =========================")
-        block_str = ''
-        for j in range(i, i + CHUNK_SIZE):
-            block_str += lines[j] + "\n"
-        print(block_str)
-        block_str_hash = hashlib.md5(block_str.encode("utf-8")).hexdigest()
-        index_entry = IndexEntry(file, i, block_str_hash, i, i + CHUNK_SIZE)
-        index_entries.append(index_entry)
-    return index_entries
+CHUNK_SIZE = 5
 
 
 def test_index():
