@@ -25,7 +25,7 @@ class CodebaseReader:
             for filename in filenames:
                 join = os.path.join(root, filename)
                 self.files.append(join)
-                lines = self.get_lines_for_file(join)
+                lines = CodebaseReader.get_lines_for_file(join)
                 self.lines_per_file[join] = lines
 
     def get__path(self):
@@ -37,12 +37,14 @@ class CodebaseReader:
     def get_lines_per_file(self):
         return self.lines_per_file
 
-    def get_lines_for_file(self, path):
-        with open(path) as fp:
+    @staticmethod
+    def get_lines_for_file(path):
+        with open(path, encoding='utf-8') as fp:
             lines = []
             for line in fp:
                 line = line.strip()
                 line = " ".join(line.split())
                 if line:
                     lines.append(line)
+        fp.close()
         return lines

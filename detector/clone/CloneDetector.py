@@ -13,6 +13,9 @@ class CloneDetector:
         self.clone_index = clone_index
         self.origin_file_name = ''
 
+    def get__clone_index(self):
+        return self.clone_index
+
     def detect_clones(self, index_entries):
         """
         Detects and reports the clones resulting by the comparison of the passed index_entries
@@ -70,10 +73,10 @@ class CloneDetector:
                 list.sort(group.get__index_entries_group(),
                           key=lambda entry: (entry.get__file_name(), entry.get__statement_index()))
 
-        # TODO: For debugging, remove later
-        for hash_key in groups_by_hash.keys():
-            print("For hash key \"" + hash_key + "\"")
-            print(groups_by_hash[hash_key])
+        # # TODO: For debugging, remove later
+        # for hash_key in groups_by_hash.keys():
+        #     print("For hash key \"" + hash_key + "\"")
+        #     print(groups_by_hash[hash_key])
 
         f_size = len(index_entries)
         same_hash_block_groups: List[IndexEntriesGroup] = [None] * (f_size + 2)

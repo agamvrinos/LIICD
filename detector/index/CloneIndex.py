@@ -5,7 +5,6 @@ from detector.index.IndexEntry import IndexEntry
 
 class CloneIndex:
 
-    CHUNK_SIZE = 5
     index_entries_by_file: Dict[str, List[IndexEntry]] = {}
     index_entries_by_hash: Dict[str, List[IndexEntry]] = {}
 
@@ -37,15 +36,15 @@ class CloneIndex:
 
     @staticmethod
     def calculate_index_entries_for_file(file, lines, chunk_size):
-        print('============================================================================================================')
-        print('[FILE]: ' + file)
+        # print('============================================================================================================')
+        # print('[FILE]: ' + file)
         index_entries = []
         for i in range(0, len(lines) - chunk_size + 1):
-            print("========================= BLOCK " + str(i) + " =========================")
+            # print("========================= BLOCK " + str(i) + " =========================")
             block_str = ''
             for j in range(i, i + chunk_size):
                 block_str += lines[j] + "\n"
-            print(block_str)
+            # print(block_str)
             block_str_hash = hashlib.md5(block_str.encode("utf-8")).hexdigest()
             index_entry = IndexEntry(file, i, block_str_hash, i, i + chunk_size)
             index_entries.append(index_entry)
