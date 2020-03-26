@@ -52,14 +52,14 @@ class ChangesHandler:
 
         for updated_filename in self.updates_lst:
             self.handle_file_deletion(updated_filename, clone_index, index_entries_by_file)
-            self.handle_file_creation(updated_filename, clone_index, index_entries_by_file)
+            self.handle_file_creation(updated_filename, clone_index)
 
     def files_creation_handler(self):
         clone_index: CloneIndex = self.detector.get__clone_index()
         for created_filename in self.creates_lst:
             self.handle_file_creation(clone_index, created_filename)
 
-    def handle_file_creation(self, clone_index, created_filename):
+    def handle_file_creation(self, created_filename, clone_index):
         lines = CodebaseReader.get_lines_for_file(created_filename)
         created_index_entries = clone_index.calculate_index_entries_for_file(created_filename, lines)
 
