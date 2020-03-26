@@ -57,7 +57,7 @@ class ChangesHandler:
     def files_creation_handler(self):
         clone_index: CloneIndex = self.detector.get__clone_index()
         for created_filename in self.creates_lst:
-            self.handle_file_creation(clone_index, created_filename)
+            self.handle_file_creation(created_filename, clone_index)
 
     def handle_file_creation(self, created_filename, clone_index):
         lines = CodebaseReader.get_lines_for_file(created_filename)

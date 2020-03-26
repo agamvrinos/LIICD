@@ -10,6 +10,7 @@ class CloneDetector:
 
     def __init__(self, clone_index):
         self.filter = Filter()
+
         self.clone_index = clone_index
         self.origin_file_name = ''
 
