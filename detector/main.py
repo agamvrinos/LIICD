@@ -5,7 +5,6 @@ from detector.index.CloneIndex import CloneIndex
 from detector.CodebaseReader import CodebaseReader
 from detector.ChangesHandler import ChangesHandler
 
-CHUNK_SIZE = 4
 
 project_path = input("Provide the project path: ")
 if not project_path:
@@ -18,7 +17,7 @@ lines_per_files = codebase.get_lines_per_file()
 clone_index = CloneIndex()
 
 for file in lines_per_files.keys():
-    index_entries = clone_index.calculate_index_entries_for_file(file, lines_per_files[file], CHUNK_SIZE)
+    index_entries = clone_index.calculate_index_entries_for_file(file, lines_per_files[file])
     clone_index.add_index_entries(index_entries)
 
 detector = CloneDetector(clone_index)
