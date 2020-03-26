@@ -16,6 +16,9 @@ class TestChangesHandler(unittest.TestCase):
     def setUpClass(cls):
         index_entries_x = cls.generate_entries("x.java", 2, 0)
         cls.test_clone_index = CloneIndex()
+        cls.test_clone_index.index_entries_by_file.clear()
+        cls.test_clone_index.index_entries_by_hash.clear()
+
         cls.test_clone_index.add_index_entries(index_entries_x)
 
         cls.detector = CloneDetector(cls.test_clone_index)
