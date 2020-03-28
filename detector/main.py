@@ -14,6 +14,8 @@ if not project_path:
 codebase = CodebaseReader(project_path)
 lines_per_files = codebase.get_lines_per_file()
 
+print("Total LOCs: ", str(codebase.get__initial_codebase_lines()))
+
 clone_index = CloneIndex()
 
 for file in lines_per_files.keys():

@@ -18,15 +18,43 @@ class CodebaseReader:
 
     files = []
     lines_per_file = {}
+    total_lines = 0
+    SKIP_DIRS = [
+        'node_modules',
+        'assets',
+        'build',
+        'docs',
+        'classes',
+        'gradle',
+        'licenses'
+    ]
+    SKIP_FILES = [
+        '.tar',
+        '.ico',
+        '.png',
+        '.jpg',
+        '.jpeg',
+        '.txt',
+        '.md',
+        '.bat',
+        '.sh',
+        'gradlew',
+        '.jks',
+        '.prpt'
+    ]
 
     def __init__(self, path):
         self.path = str(path)
         for root, directories, filenames in os.walk(self.path):
+            filenames = [f for f in filenames if not (f[0] == '.' or f.endswith(tuple(self.SKIP_FILES)))]
+            directories[:] = [d for d in directories if not (d[0] == '.' or d in self.SKIP_DIRS)]
+
             for filename in filenames:
                 join = os.path.join(root, filename)
                 self.files.append(join)
                 lines = CodebaseReader.get_lines_for_file(join)
                 self.lines_per_file[join] = lines
+                self.total_lines = self.total_lines + len(lines)
 
     def get__path(self):
         return self.path
@@ -37,14 +65,21 @@ class CodebaseReader:
     def get_lines_per_file(self):
         return self.lines_per_file
 
+    def get__initial_codebase_lines(self):
+        return self.total_lines
+
     @staticmethod
     def get_lines_for_file(path):
-        with open(path, encoding='utf-8') as fp:
-            lines = []
-            for line in fp:
-                line = line.strip()
-                line = " ".join(line.split())
-                if line:
-                    lines.append(line)
-        fp.close()
-        return lines
+        try:
+            with open(path, encoding='utf-8') as fp:
+                lines = []
+                for line in fp:
+                    line = line.strip()
+                    line = " ".join(line.split())
+                    if line:
+                        lines.append(line)
+            fp.close()
+            return lines
+        except:
+            print("Error for file: ", path)
+            raise
