@@ -20,33 +20,28 @@ class CodebaseReader:
     lines_per_file = {}
     total_lines = 0
     SKIP_DIRS = [
-        'node_modules',
-        'assets',
-        'build',
-        'docs',
-        'classes',
-        'gradle',
-        'licenses'
+        'node_modules', 'assets', 'build', 'classes', 'gradle', 'licenses'
     ]
     SKIP_FILES = [
-        '.tar',
-        '.ico',
-        '.png',
-        '.jpg',
-        '.jpeg',
-        '.txt',
-        '.md',
-        '.bat',
-        '.sh',
-        'gradlew',
-        '.jks',
-        '.prpt'
+        '.tar', '.ico', '.png', '.jpg', '.jpeg', '.txt', '.md', '.bat', '.sh', '.jks',
+        '.prpt', '.pyc', '.bmp', '.ini', '.db', '.gif', '.plist', '.ver', '.ogv',
+        '.swf', '.xpi', '.icns', '.ogg', ".eot", ".ttf", ".woff"
     ]
 
     def __init__(self, path):
         self.path = str(path)
         for root, directories, filenames in os.walk(self.path):
-            filenames = [f for f in filenames if not (f[0] == '.' or f.endswith(tuple(self.SKIP_FILES)))]
+            filenames2 = []
+            for f in filenames:
+                split_path = f.split(os.sep)
+                is_without_extension = len(split_path[len(split_path) - 1].split(".")) == 1
+                if not (f[0] == '.' or f.endswith(tuple(self.SKIP_FILES)) or is_without_extension):
+                    filenames2.append(f)
+                # else:
+                #     print("Skipping file \"" + f + "\"")
+
+            filenames = filenames2
+
             directories[:] = [d for d in directories if not (d[0] == '.' or d in self.SKIP_DIRS)]
 
             for filename in filenames:
