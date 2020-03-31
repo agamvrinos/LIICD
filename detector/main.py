@@ -1,26 +1,37 @@
 import json
 from pathlib import Path
+from utils.utils import get_size
 from detector.clone.CloneDetector import CloneDetector
 from detector.index.CloneIndex import CloneIndex
 from detector.CodebaseReader import CodebaseReader
 from detector.ChangesHandler import ChangesHandler
-
+from timeit import default_timer as timer
 
 project_path = input("Provide the project path: ")
 if not project_path:
-    project_path = Path.home() / 'Desktop/data/test_project'
+    project_path = Path.home() / 'Desktop/data/material'
     print("Empty path provided. Setting default project path \"" + str(project_path) + "\"")
+
+# start the timer
+start = timer()
 
 codebase = CodebaseReader(project_path)
 lines_per_files = codebase.get_lines_per_file()
-
-print("Total LOCs: ", str(codebase.get__initial_codebase_lines()))
 
 clone_index = CloneIndex()
 
 for file in lines_per_files.keys():
     index_entries = clone_index.calculate_index_entries_for_file(file, lines_per_files[file])
     clone_index.add_index_entries(index_entries)
+
+end = timer()
+
+print("============================================================")
+print("Total LOCs: ", str(codebase.get__initial_codebase_lines()))
+print("Index creation time: " + str(round(end-start, 5)) + " seconds")
+print("Approx. Index size: " + str(
+    round((get_size(clone_index.index_entries_by_file) + get_size(clone_index.index_entries_by_hash)) / pow(1024, 2), 5)) + " MB")
+print("============================================================")
 
 detector = CloneDetector(clone_index)
 
