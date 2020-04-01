@@ -59,7 +59,14 @@ while True:
                     deletes_lst.append(change['path'])
 
         changes_handler = ChangesHandler(detector, deletes_lst, updates_lst, creates_lst)
+
+        # start incremental step timer
+        start = timer()
+        # handle commit changes
         changes_handler.handle_changes()
+        # end incremental step timer
+        end = timer()
+        print("Detection/Index update time: " + str(round(end - start, 5)) + " seconds")
 
         f.close()
     except IOError:
