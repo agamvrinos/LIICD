@@ -26,6 +26,7 @@ class CloneDetector:
             index_entries: index entries of the file to be checked against the existing clone
             index. Corresponds to "f" in the original paper
         """
+        self.filter.filtered = []
         self.origin_file_name = index_entries[0].get__file_name()
 
         same_hash_block_groups: List[IndexEntriesGroup] = self.create_groups(index_entries)

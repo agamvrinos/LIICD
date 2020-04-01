@@ -13,9 +13,12 @@ class ChangesHandler:
         self.creates_lst: List = creates_lst
 
     def handle_changes(self):
-        self.files_deletion_handler()
-        self.files_update_handler()
-        self.files_creation_handler()
+        if len(self.deletes_lst) != 0:
+            self.files_deletion_handler()
+        if len(self.updates_lst) != 0:
+            self.files_update_handler()
+        if len(self.creates_lst) != 0:
+            self.files_creation_handler()
 
     def files_deletion_handler(self):
         clone_index: CloneIndex = self.detector.get__clone_index()
@@ -29,6 +32,7 @@ class ChangesHandler:
 
         # detect the clones to be removed
         results = self.detector.detect_clones(deleted_index_entries)
+        print("Clones Removed")
         for group in results:
             print(group)
 
@@ -65,6 +69,7 @@ class ChangesHandler:
 
         # detect the clones to be removed
         results = self.detector.detect_clones(created_index_entries)
+        print("Clones Added")
         for group in results:
             print(group)
 

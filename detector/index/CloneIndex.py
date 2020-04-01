@@ -46,6 +46,6 @@ class CloneIndex:
                 block_str += lines[j] + "\n"
             # print(block_str)
             block_str_hash = hashlib.md5(block_str.encode("utf-8")).hexdigest()
-            index_entry = IndexEntry(file, i+1, block_str_hash, i+1, i + CloneIndex.CHUNK_SIZE)
+            index_entry = IndexEntry(file, i, block_str_hash, i, i + CloneIndex.CHUNK_SIZE)
             index_entries.append(index_entry)
         return index_entries
