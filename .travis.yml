@@ -3,5 +3,6 @@ python:
   - "3.7"
 install:
   - pip install -r Original/requirements.txt
+before_script: cd Original
 script:
-  - python -m unittest discover Original/test
+  - python -m unittest discover test
