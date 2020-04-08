@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from datasketch import MinHash, MinHashLSH
 from timeit import default_timer as timer
@@ -14,7 +15,41 @@ if not project_path:
 codebase = CodebaseReader(project_path)
 lines_per_files = codebase.get_lines_per_file()
 
+# Create LSH index
+lsh = MinHashLSH(threshold=0.2, num_perm=250)
+
 for file in lines_per_files:
-    print(file)
+    min_hash = MinHash(num_perm=250)
     for line in lines_per_files[file]:
-        print(line)
+        min_hash.update(line.encode('utf8'))
+    lsh.insert(file, min_hash)
+
+updates_path = input("Provide the updates file path: ")
+if not updates_path:
+    updates_path = Path.home() / 'Desktop/data/updates.json'
+    print("Empty path provided. Setting default updates path \"" + str(updates_path) + "\"")
+
+while True:
+    creates_lst = []
+    updates_lst = []
+    deletes_lst = []
+
+    try:
+        input("Waiting for codebase changes...")
+
+        with open(updates_path) as f:
+            changes = json.load(f)
+            for change in changes:
+                if change['type'] == 'create':
+                    creates_lst.append(change['path'])
+                elif change['type'] == 'update':
+                    updates_lst.append(change['path'])
+                elif change['type'] == 'delete':
+                    deletes_lst.append(change['path'])
+    except IOError:
+        print("File \"" + str(updates_path) + "\" not found.")
+
+# lsh.insert("m2", m2)
+# # lsh.insert("m3", m1)
+# result = lsh.query(m1)
+# print("Approximate neighbours with Jaccard similarity > 0.5", result)
