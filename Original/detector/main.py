@@ -9,7 +9,7 @@ from timeit import default_timer as timer
 
 project_path = input("Provide the project path: ")
 if not project_path:
-    project_path = Path.home() / 'Desktop/data/material'
+    project_path = Path.home() / 'Desktop/data/test_project'
     print("Empty path provided. Setting default project path \"" + str(project_path) + "\"")
 
 # start the timer
