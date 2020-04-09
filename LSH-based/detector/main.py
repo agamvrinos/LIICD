@@ -1,4 +1,5 @@
 import json
+import config
 from pathlib import Path
 from datasketch import MinHash, MinHashLSH
 from timeit import default_timer as timer
@@ -17,10 +18,10 @@ codebase = CodebaseReader(project_path)
 lines_per_files = codebase.get_lines_per_file()
 
 # Create LSH index
-lsh_index = MinHashLSH(threshold=0.2, num_perm=250)
+lsh_index = MinHashLSH(threshold=config.THRESHOLD, num_perm=config.PERMUTATIONS)
 
 for file in lines_per_files:
-    min_hash = MinHash(num_perm=250)
+    min_hash = MinHash(num_perm=config.PERMUTATIONS)
     for line in lines_per_files[file]:
         min_hash.update(line.encode('utf8'))
     lsh_index.insert(file, min_hash)
