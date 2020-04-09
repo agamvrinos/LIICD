@@ -1,8 +1,7 @@
+import config
 from typing import List
+from datasketch import MinHash, MinHashLSH
 from detector.CodebaseReader import CodebaseReader
-from datasketch import MinHashLSH
-# from detector.clone.CloneDetector import CloneDetector
-# from detector.index.CloneIndex import CloneIndex
 
 
 class ChangesHandler:
@@ -26,7 +25,18 @@ class ChangesHandler:
             self.handle_file_deletion(deleted_filename)
 
     def handle_file_deletion(self, deleted_filename):
-        print("handle deletion for ", deleted_filename)
+        # TODO: Querying the LSH index could be avoided if we don't want to
+        #  show which clones will be removed
+
+        # lines for the given created file
+        lines = CodebaseReader.get_lines_for_file(deleted_filename)
+        # calculate min_hash based on these lines
+        min_hash = self.get_minhash_for_lines(lines)
+
+        similar_docs = self.lsh_index.query(min_hash)
+        print(similar_docs)
+
+        # TODO: calculate index entries for the similar files and run detection logic
 
     def files_update_handler(self):
         for updated_filename in self.updates_lst:
@@ -38,4 +48,18 @@ class ChangesHandler:
             self.handle_file_creation(created_filename)
 
     def handle_file_creation(self, created_filename):
-        print("handle creation for ", created_filename)
+        # lines for the given created file
+        lines = CodebaseReader.get_lines_for_file(created_filename)
+        # calculate min_hash based on these lines
+        min_hash = self.get_minhash_for_lines(lines)
+
+        similar_docs = self.lsh_index.query(min_hash)
+        print(similar_docs)
+
+        # TODO: calculate index entries for the similar files and run detection logic
+
+    def get_minhash_for_lines(self, lines):
+        min_hash = MinHash(num_perm=config.PERMUTATIONS)
+        for line in lines:
+            min_hash.update(line.encode('utf8'))
+        return min_hash
