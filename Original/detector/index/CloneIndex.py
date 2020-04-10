@@ -1,10 +1,10 @@
 import hashlib
+import detector.config as config
 from typing import Dict, List
 from detector.index.IndexEntry import IndexEntry
 
 
 class CloneIndex:
-    CHUNK_SIZE = 4
     index_entries_by_file: Dict[str, List[IndexEntry]] = {}
     index_entries_by_hash: Dict[str, List[IndexEntry]] = {}
 
@@ -39,13 +39,13 @@ class CloneIndex:
         # print('============================================================================================================')
         # print('[FILE]: ' + file)
         index_entries = []
-        for i in range(0, len(lines) - CloneIndex.CHUNK_SIZE + 1):
+        for i in range(0, len(lines) - config.CHUNK_SIZE + 1):
             # print("========================= BLOCK " + str(i) + " =========================")
             block_str = ''
-            for j in range(i, i + CloneIndex.CHUNK_SIZE):
+            for j in range(i, i + config.CHUNK_SIZE):
                 block_str += lines[j] + "\n"
             # print(block_str)
             block_str_hash = hashlib.md5(block_str.encode("utf-8")).hexdigest()
-            index_entry = IndexEntry(file, i, block_str_hash, i, i + CloneIndex.CHUNK_SIZE)
+            index_entry = IndexEntry(file, i, block_str_hash, i, i + config.CHUNK_SIZE)
             index_entries.append(index_entry)
         return index_entries

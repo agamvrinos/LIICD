@@ -8,7 +8,7 @@ from detector.clone.CloneDetector import CloneDetector
 
 class TestCloneGroup(unittest.TestCase):
 
-    CHUNK_LENGTH = 5
+    CHUNK_SIZE = 5
 
     def setUp(self):
         self.test_clone_index = CloneIndex()
@@ -104,7 +104,7 @@ class TestCloneGroup(unittest.TestCase):
     def generate_entries(self, filename, count, from_index):
         index_entries = []
         for i in range(0, count):
-            entry = IndexEntry(filename, i, "hash" + str(from_index + i), i, i + self.CHUNK_LENGTH)
+            entry = IndexEntry(filename, i, "hash" + str(from_index + i), i, i + self.CHUNK_SIZE)
             index_entries.append(entry)
         return index_entries
 
