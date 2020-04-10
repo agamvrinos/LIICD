@@ -38,6 +38,9 @@ class ChangesHandler:
 
         # TODO: calculate index entries for the similar files and run detection logic
 
+        # remove the deleted entry from the LSH
+        self.lsh_index.remove(deleted_filename)
+
     def files_update_handler(self):
         for updated_filename in self.updates_lst:
             self.handle_file_deletion(updated_filename)
@@ -57,6 +60,8 @@ class ChangesHandler:
         print(similar_docs)
 
         # TODO: calculate index entries for the similar files and run detection logic
+        # update LSH with the new entry
+        self.lsh_index.insert(created_filename, min_hash)
 
     def get_minhash_for_lines(self, lines):
         min_hash = MinHash(num_perm=config.PERMUTATIONS)
