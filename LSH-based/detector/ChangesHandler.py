@@ -1,7 +1,9 @@
 import config
 from typing import List
 from datasketch import MinHash, MinHashLSH
+from detector.index.CloneIndex import CloneIndex
 from detector.CodebaseReader import CodebaseReader
+from detector.clone.CloneDetector import CloneDetector
 
 
 class ChangesHandler:
@@ -59,9 +61,26 @@ class ChangesHandler:
         similar_docs = self.lsh_index.query(min_hash)
         print(similar_docs)
 
-        # TODO: calculate index entries for the similar files and run detection logic
+        results = self.detect_clones_for_similar_files(created_filename, lines, similar_docs)
+        for result in results:
+            print(result)
+
         # update LSH with the new entry
         self.lsh_index.insert(created_filename, min_hash)
+
+    def detect_clones_for_similar_files(self, filename, lines, similar_docs):
+        mini_clone_index = CloneIndex()
+        for similar_doc in similar_docs:
+            similar_doc_lines = CodebaseReader.get_lines_for_file(similar_doc)
+            similar_doc_index_entries = CloneIndex.calculate_index_entries_for_file(similar_doc, similar_doc_lines)
+            mini_clone_index.add_index_entries(similar_doc_index_entries)
+
+        # Init clone detector using the mini index
+        detector = CloneDetector(mini_clone_index)
+        current_file_index_entries = CloneIndex.calculate_index_entries_for_file(filename, lines)
+
+        results = detector.detect_clones(current_file_index_entries)
+        return results
 
     def get_minhash_for_lines(self, lines):
         min_hash = MinHash(num_perm=config.PERMUTATIONS)
