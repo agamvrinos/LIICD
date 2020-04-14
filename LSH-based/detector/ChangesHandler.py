@@ -27,18 +27,20 @@ class ChangesHandler:
             self.handle_file_deletion(deleted_filename)
 
     def handle_file_deletion(self, deleted_filename):
-        # TODO: Querying the LSH index could be avoided if we don't want to
-        #  show which clones will be removed
+        # TODO: Querying the LSH index & constructing the index could be
+        #  avoided if we don't want to show which clones will be removed
 
         # lines for the given created file
         lines = CodebaseReader.get_lines_for_file(deleted_filename)
         # calculate min_hash based on these lines
         min_hash = self.get_minhash_for_lines(lines)
-
+        # query LSH index to find out which files are similar to the deleted one
         similar_docs = self.lsh_index.query(min_hash)
         print(similar_docs)
 
-        # TODO: calculate index entries for the similar files and run detection logic
+        results = self.detect_clones_for_similar_files(deleted_filename, lines, similar_docs)
+        for result in results:
+            print(result)
 
         # remove the deleted entry from the LSH
         self.lsh_index.remove(deleted_filename)
@@ -57,7 +59,7 @@ class ChangesHandler:
         lines = CodebaseReader.get_lines_for_file(created_filename)
         # calculate min_hash based on these lines
         min_hash = self.get_minhash_for_lines(lines)
-
+        # query LSH index to find out which files are similar to the created one
         similar_docs = self.lsh_index.query(min_hash)
         print(similar_docs)
 
@@ -70,6 +72,9 @@ class ChangesHandler:
 
     def detect_clones_for_similar_files(self, filename, lines, similar_docs):
         mini_clone_index = CloneIndex()
+        mini_clone_index.index_entries_by_hash.clear()
+        mini_clone_index.index_entries_by_file.clear()
+
         for similar_doc in similar_docs:
             similar_doc_lines = CodebaseReader.get_lines_for_file(similar_doc)
             similar_doc_index_entries = CloneIndex.calculate_index_entries_for_file(similar_doc, similar_doc_lines)
