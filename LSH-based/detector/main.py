@@ -12,7 +12,7 @@ if not project_path:
     print("Empty path provided. Setting default project path \"" + str(project_path) + "\"")
 
 # start the timer
-# start = timer()
+start = timer()
 
 codebase = CodebaseReader(project_path)
 lines_per_files = codebase.get_lines_per_file()
@@ -25,6 +25,13 @@ for file in lines_per_files:
     for line in lines_per_files[file]:
         min_hash.update(line.encode('utf8'))
     lsh_index.insert(file, min_hash)
+
+end = timer()
+
+print("============================================================")
+print("Total LOCs: ", str(codebase.get__initial_codebase_lines()))
+print("Index creation time: " + str(round(end-start, 5)) + " seconds")
+print("============================================================")
 
 updates_path = input("Provide the updates file path: ")
 if not updates_path:
@@ -53,8 +60,3 @@ while True:
         changes_handler.handle_changes()
     except IOError:
         print("File \"" + str(updates_path) + "\" not found.")
-
-# lsh.insert("m2", m2)
-# # lsh.insert("m3", m1)
-# result = lsh.query(m1)
-# print("Approximate neighbours with Jaccard similarity > 0.5", result)
