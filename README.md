@@ -3,12 +3,17 @@
 
 # CloneDetector
 
-A Python implementation of an Incremental Clone Detector.
+Two Python implementations of an Incremental Clone Detector. 
+
+1. The **Original** one implements Hummel's clone-index based approach
+2. The **LSH-based** utilizes Locality Sensitive Hashing (LSH) to calculate the clones for similar files, avoiding thus the calculation of large intermediate data representations.
 
 ## Install
+
+For both sub-projects:
 
 Install dependencies via `pip install requirements.txt`
 
 ## Run
 
-The implementation can simply be run via the main script `main.py`
+Both implementations can simply be run via the main script `main.py`
