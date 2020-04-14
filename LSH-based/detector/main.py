@@ -44,7 +44,9 @@ while True:
     deletes_lst = []
 
     try:
-        input("Waiting for codebase changes...")
+        key = input("Waiting for codebase changes...")
+        if key == "quit":
+            quit()
 
         with open(updates_path) as f:
             changes = json.load(f)
