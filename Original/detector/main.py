@@ -84,7 +84,7 @@ if argument.upath:
     updates_file_path = argument.upath
     status = True
 if not status:
-    print("Maybe you want to use -H or -s or -p or -p as arguments ?")
+    print("Maybe you want to use -p or -u as arguments ?")
 
 
 run(codebase_path, updates_file_path)
