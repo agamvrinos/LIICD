@@ -1,7 +1,7 @@
 import hashlib
-import detector.config as config
+import config as config
 from typing import Dict, List
-from detector.index.IndexEntry import IndexEntry
+from index.IndexEntry import IndexEntry
 
 
 class CloneIndex:

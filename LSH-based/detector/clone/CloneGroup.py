@@ -1,5 +1,5 @@
 from typing import List
-from detector.clone import ClonePart
+from clone import ClonePart
 
 
 class CloneGroup:

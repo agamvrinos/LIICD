@@ -6,8 +6,10 @@ from datasketch import MinHash, MinHashLSH
 from timeit import default_timer as timer
 from ChangesHandler import ChangesHandler
 from CodebaseReader import CodebaseReader
+from memory_profiler import profile
 
 
+@profile
 def run(codebase_path, updates_file_path):
     # start the timer
     start = timer()
@@ -57,7 +59,7 @@ def run(codebase_path, updates_file_path):
             print("File \"" + str(updates_file_path) + "\" not found.")
 
 
-codebase_path = Path.home() / 'Desktop/data/test_project'
+codebase_path = Path.home() / 'Desktop/data/homebrew-core'
 updates_file_path = Path.home() / 'Desktop/data/updates.json'
 
 parser = argparse.ArgumentParser(description="Runs the LSH-based clone detector")
@@ -76,7 +78,7 @@ if argument.upath:
     updates_file_path = argument.upath
     status = True
 if not status:
-    print("Maybe you want to use -H or -s or -p or -p as arguments ?")
+    print("Maybe you want to use -p or -u as arguments ?")
 
 
 run(codebase_path, updates_file_path)

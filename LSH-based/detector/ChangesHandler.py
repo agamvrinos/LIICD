@@ -1,9 +1,9 @@
 import config
 from typing import List
 from datasketch import MinHash, MinHashLSH
-from detector.index.CloneIndex import CloneIndex
-from detector.CodebaseReader import CodebaseReader
-from detector.clone.CloneDetector import CloneDetector
+from index.CloneIndex import CloneIndex
+from CodebaseReader import CodebaseReader
+from clone.CloneDetector import CloneDetector
 
 
 class ChangesHandler:
