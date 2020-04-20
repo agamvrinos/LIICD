@@ -20,12 +20,14 @@ class CodebaseReader:
     lines_per_file = {}
     total_lines = 0
     SKIP_DIRS = [
-        'node_modules', 'assets', 'build', 'classes', 'gradle', 'licenses'
+        'node_modules', 'assets', 'build', 'classes', 'gradle', 'licenses', 'icu'
     ]
     SKIP_FILES = [
         '.tar', '.ico', '.png', '.jpg', '.jpeg', '.txt', '.md', '.bat', '.sh', '.jks',
         '.prpt', '.pyc', '.bmp', '.ini', '.db', '.gif', '.plist', '.ver', '.ogv',
-        '.swf', '.xpi', '.icns', '.ogg', ".eot", ".ttf", ".woff"
+        '.swf', '.xpi', '.icns', '.ogg', '.eot', '.ttf', '.woff', '.pb', '.data-00000-of-00001',
+        '.index', '.golden', '.pbtxt.gz', '.wav', '.bin', '.mdb', '.meta', '.bytes', '.lite', '.h5',
+        '.data-00000-of-00002', '.data-00001-of-00002', '.mp4'
     ]
 
     def __init__(self, path):
