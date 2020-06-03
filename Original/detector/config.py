@@ -1,1 +1,1 @@
-CHUNK_SIZE = 4
+CHUNK_SIZE = 6
