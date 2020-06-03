@@ -1,12 +1,18 @@
 import time
 import json
 import subprocess
+from pathlib import Path
 
-NUMBER_OF_COMMITS = 2
+target_project_path = Path.home() / 'Desktop/Experiments/ansible'
+
+NUMBER_OF_COMMITS = 10
 
 JSON_data = {'commits': []}
 
-result = subprocess.run(['git', 'log', '-' + str(NUMBER_OF_COMMITS), '--no-merges', '--pretty=format:"%h"'], stdout=subprocess.PIPE)
+result = subprocess.run(['git', '-C', str(target_project_path),
+                         'log', '-' + str(NUMBER_OF_COMMITS), '--no-merges', '--pretty=format:"%h"'],
+                        stdout=subprocess.PIPE)
+
 commits = result.stdout.decode('utf-8')
 commits = commits.replace('"', '')
 commits = commits.split('\n')
@@ -24,9 +30,12 @@ for commit in commits_rev:
     print('=======================================')
 
     # checkout to the current commit
-    subprocess.run(['git', 'checkout', commit], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    subprocess.run(['git', '-C', str(target_project_path),
+                    'checkout', commit], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     # get raw commit log
-    changes = subprocess.run(['git', 'log', '-1', '--name-status', '--diff-filter=AMD', '--format='], stdout=subprocess.PIPE)
+    changes = subprocess.run(['git', '-C', str(target_project_path),
+                              'log', '-1', '--name-status', '--diff-filter=AMD', '--format='], stdout=subprocess.PIPE)
+
     changes = changes.stdout.decode('utf-8')
     changes = changes.split("\n")
     for change in changes:
@@ -46,16 +55,17 @@ for commit in commits_rev:
         'changes': JSON_changes
     })
 
-    time.sleep(2)
+    time.sleep(4)
 
     print('=======================================')
     print('CHECKING OUT BACK TO HEAD')
     print('=======================================')
 
     # checkout back to HEAD
-    subprocess.run(['git', 'checkout', '-'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    subprocess.run(['git', '-C', str(target_project_path),
+                    'checkout', '-'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-    time.sleep(2)
+    time.sleep(4)
 
 with open('data.json', 'w') as outfile:
     json.dump(JSON_data, outfile, indent=4)
