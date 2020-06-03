@@ -20,7 +20,8 @@ class CodebaseReader:
     lines_per_file = {}
     total_lines = 0
     SKIP_DIRS = [
-        'node_modules', 'assets', 'build', 'classes', 'gradle', 'licenses', 'icu', 'dcn21', 'fixtures'
+        'node_modules', 'assets', 'build', 'classes', 'gradle', 'licenses', 'icu', 'dcn21',
+        'fixtures', 'docs', 'test', 'tests', 'examples'
     ]
     SKIP_FILES = [
         '.tar', '.ico', '.png', '.jpg', '.jpeg', '.txt', '.md', '.bat', '.sh', '.jks',
@@ -28,7 +29,8 @@ class CodebaseReader:
         '.swf', '.xpi', '.icns', '.ogg', '.eot', '.ttf', '.woff', '.pb', '.data-00000-of-00001',
         '.index', '.golden', '.pbtxt.gz', '.wav', '.bin', '.mdb', '.meta', '.bytes', '.lite', '.h5',
         '.data-00000-of-00002', '.data-00001-of-00002', '.mp4', '.map', '.woff2', '.pdf', '.exe',
-        '.scpt'
+        '.scpt', '.elf', '.skb', '.skp', '.rgb', '.a', 'zip', '.dtbo', '.3ds', '.mat', '.fig', '.pfx',
+        '.dll', '.cs'
     ]
 
     def __init__(self, path):
@@ -49,8 +51,10 @@ class CodebaseReader:
 
             for filename in filenames:
                 join = os.path.join(root, filename)
-                self.files.append(join)
                 lines = CodebaseReader.get_lines_for_file(join)
+                if lines is None:
+                    continue
+                self.files.append(join)
                 self.lines_per_file[join] = lines
                 self.total_lines = self.total_lines + len(lines)
 
@@ -78,6 +82,6 @@ class CodebaseReader:
                         lines.append(line)
             fp.close()
             return lines
-        except:
-            print("Error for file: ", path)
-            raise
+        except UnicodeDecodeError:
+            print("Skipping binary file: ", path)
+            return None
