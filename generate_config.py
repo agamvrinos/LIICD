@@ -1,11 +1,19 @@
+import os
 import time
 import json
+import argparse
 import subprocess
 from pathlib import Path
 
-target_project_path = Path.home() / 'Desktop/Experiments/ansible'
+NUMBER_OF_COMMITS = 2
+target_project_path = Path.home() / 'Desktop/Experiments/ardupilot'
 
-NUMBER_OF_COMMITS = 10
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", help="The path of the codebase for which we generate the config",
+                    required=False, default=target_project_path)
+parser.add_argument("-n", help="The number of commits to analyze (default 10)",
+                    required=False, default=NUMBER_OF_COMMITS)
+
 
 JSON_data = {'commits': []}
 
@@ -67,5 +75,13 @@ for commit in commits_rev:
 
     time.sleep(4)
 
-with open('data.json', 'w') as outfile:
+
+# create config files directory
+directory_name = 'configurations'
+if not os.path.exists(directory_name):
+    os.makedirs(directory_name)
+
+updates_filename = directory_name / Path(target_project_path.stem + '_updates.json')
+
+with open(updates_filename, 'w') as outfile:
     json.dump(JSON_data, outfile, indent=4)
