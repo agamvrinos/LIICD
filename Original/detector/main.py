@@ -7,7 +7,10 @@ from detector.CodebaseReader import CodebaseReader
 from detector.ChangesHandler import ChangesHandler
 from timeit import default_timer as timer
 
-
+# from memory_profiler import profile
+#
+#
+# @profile
 def run(codebase_path, updates_file_path):
     # start the timer
     start = timer()
