@@ -1,4 +1,5 @@
 import os
+import detector.config as config
 
 
 class CodebaseReader:
@@ -19,19 +20,6 @@ class CodebaseReader:
     files = []
     lines_per_file = {}
     total_lines = 0
-    SKIP_DIRS = [
-        'node_modules', 'assets', 'build', 'classes', 'gradle', 'licenses', 'icu', 'dcn21',
-        'fixtures', 'docs', 'test', 'tests', 'examples'
-    ]
-    SKIP_FILES = [
-        '.tar', '.ico', '.png', '.jpg', '.jpeg', '.txt', '.md', '.bat', '.sh', '.jks',
-        '.prpt', '.pyc', '.bmp', '.ini', '.db', '.gif', '.plist', '.ver', '.ogv',
-        '.swf', '.xpi', '.icns', '.ogg', '.eot', '.ttf', '.woff', '.pb', '.data-00000-of-00001',
-        '.index', '.golden', '.pbtxt.gz', '.wav', '.bin', '.mdb', '.meta', '.bytes', '.lite', '.h5',
-        '.data-00000-of-00002', '.data-00001-of-00002', '.mp4', '.map', '.woff2', '.pdf', '.exe',
-        '.scpt', '.elf', '.skb', '.skp', '.rgb', '.a', 'zip', '.dtbo', '.3ds', '.mat', '.fig', '.pfx',
-        '.dll', '.cs'
-    ]
 
     def __init__(self, path):
         self.path = str(path)
@@ -40,14 +28,14 @@ class CodebaseReader:
             for f in filenames:
                 split_path = f.split(os.sep)
                 is_without_extension = len(split_path[len(split_path) - 1].split(".")) == 1
-                if not (f[0] == '.' or f.endswith(tuple(self.SKIP_FILES)) or is_without_extension):
+                if not (f[0] == '.' or f.endswith(tuple(config.SKIP_FILES)) or is_without_extension):
                     filenames2.append(f)
                 # else:
                 #     print("Skipping file \"" + f + "\"")
 
             filenames = filenames2
 
-            directories[:] = [d for d in directories if not (d[0] == '.' or d in self.SKIP_DIRS)]
+            directories[:] = [d for d in directories if not (d[0] == '.' or d in config.SKIP_DIRS)]
 
             for filename in filenames:
                 join = os.path.join(root, filename)
@@ -83,5 +71,5 @@ class CodebaseReader:
             fp.close()
             return lines
         except UnicodeDecodeError:
-            print("Skipping binary file: ", path)
+            print("Skipping file with non-unicode characters: ", path)
             return None
