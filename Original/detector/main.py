@@ -63,7 +63,6 @@ def run(codebase_path, updates_file_path):
 
                     # skip directories not read when creating the initial index
                     for path_part in file_path.parts:
-                        print(path_part)
                         if path_part in config.SKIP_DIRS:
                             continue
 
