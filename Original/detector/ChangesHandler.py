@@ -72,7 +72,8 @@ class ChangesHandler:
         results = self.detector.detect_clones(created_index_entries)
         print("Clones Added")
         for group in results:
-            print(group)
+            if len(set(group.get__parts())) > 1:
+                print(group)
 
         # add corresponding entries to index
         clone_index.add_index_entries(created_index_entries)

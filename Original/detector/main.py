@@ -14,6 +14,8 @@ from timeit import default_timer as timer
 #
 # @profile
 def run(codebase_path, updates_file_path):
+
+    print("Creating Clone Index from HEAD~" + str(config.COMMITS + 1))
     # checkout to the commit prior to the one you want to start measuring from
     subprocess.run(['git', '-C', str(codebase_path), 'checkout', 'HEAD~' + str(config.COMMITS + 1)],
                    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
@@ -103,7 +105,7 @@ def run(codebase_path, updates_file_path):
 codebase_path = Path.home() / 'Desktop/Experiments/tensorflow'
 updates_file_path = Path.home() / 'PycharmProjects/CloneDetector/configurations' / Path(codebase_path.stem + '_updates.json')
 
-parser = argparse.ArgumentParser(description="Runs the LSH-based clone detector")
+parser = argparse.ArgumentParser(description="Runs the Original clone detector")
 parser.add_argument("-p", "--path", help="The path of the codebase to be analyzed",
                     required=False, default=codebase_path)
 parser.add_argument("-u", "--upath", help="The path of the file that indicates the updates",
