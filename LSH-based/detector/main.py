@@ -1,16 +1,24 @@
 import json
-import config
 import argparse
+import subprocess
+import detector.config as config
 from pathlib import Path
 from datasketch import MinHash, MinHashLSH
-from timeit import default_timer as timer
 from ChangesHandler import ChangesHandler
 from CodebaseReader import CodebaseReader
+from timeit import default_timer as timer
+
 # from memory_profiler import profile
 
 
 # @profile
 def run(codebase_path, updates_file_path):
+
+    print("Creating Clone Index from HEAD~" + str(config.COMMITS + 1))
+    # checkout to the commit prior to the one you want to start measuring from
+    subprocess.run(['git', '-C', str(codebase_path), 'checkout', 'HEAD~' + str(config.COMMITS + 1)],
+                   stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
     # start the timer
     start = timer()
 
@@ -33,34 +41,69 @@ def run(codebase_path, updates_file_path):
     print("Index creation time: " + str(round(end-start, 5)) + " seconds")
     print("============================================================")
 
-    while True:
-        creates_lst = []
-        updates_lst = []
-        deletes_lst = []
+    try:
+        with open(updates_file_path) as f:
+            data = json.load(f)
 
-        try:
-            key = input("Waiting for codebase changes...")
-            if key == "quit":
-                quit()
+            for commit in data['commits']:
+                creates_lst = []
+                updates_lst = []
+                deletes_lst = []
 
-            with open(updates_file_path) as f:
-                changes = json.load(f)
-                for change in changes:
-                    if change['type'] == 'create':
-                        creates_lst.append(change['path'])
-                    elif change['type'] == 'update':
-                        updates_lst.append(change['path'])
-                    elif change['type'] == 'delete':
-                        deletes_lst.append(change['path'])
+                print('============================================================')
+                print('Running Analysis for codebase @commit: ', commit['id'])
 
-            changes_handler = ChangesHandler(lsh_index, deletes_lst, updates_lst, creates_lst)
-            changes_handler.handle_changes()
-        except IOError:
-            print("File \"" + str(updates_file_path) + "\" not found.")
+                # checkout to the current commit
+                subprocess.run(['git', '-C', str(codebase_path),
+                                'checkout', commit['id']], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
+                for change in commit['changes']:
+                    change_type = change['type']
+                    affected_filename = change['filename']
+
+                    file_path = Path(affected_filename)
+
+                    # skip directories not read when creating the initial index
+                    for path_part in file_path.parts:
+                        if path_part in config.SKIP_DIRS:
+                            continue
+
+                    # skip files in binary format
+                    if file_path.suffix in config.SKIP_FILES:
+                        continue
+
+                    file_path = codebase_path / file_path
+
+                    print('-> Parsing change [', change_type, '] for file [', file_path, ']')
+
+                    if change_type == 'A':
+                        creates_lst.append(str(file_path))
+                    elif change_type == 'M':
+                        updates_lst.append(str(file_path))
+                    elif change_type == 'D':
+                        deletes_lst.append(str(file_path))
+
+                changes_handler = ChangesHandler(lsh_index, deletes_lst, updates_lst, creates_lst)
+                # start incremental step timer
+                start = timer()
+                # handle commit changes
+                changes_handler.handle_changes()
+                # end incremental step timer
+                end = timer()
+                print("Detection/Index update time: " + str(round(end - start, 5)) + " seconds")
+                print('=======================================================')
+
+                # checkout back to HEAD
+                subprocess.run(['git', '-C', str(codebase_path), 'checkout', '-'],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
+        f.close()
+    except IOError:
+        print("File \"" + str(updates_file_path) + "\" not found.")
 
 
-codebase_path = Path.home() / 'Desktop/data/homebrew-core'
-updates_file_path = Path.home() / 'Desktop/data/updates.json'
+codebase_path = Path.home() / 'Desktop/data/tensorflow'
+updates_file_path = Path.home() / 'PycharmProjects/CloneDetector/configurations' / Path(codebase_path.stem + '_updates.json')
 
 parser = argparse.ArgumentParser(description="Runs the LSH-based clone detector")
 parser.add_argument("-p", "--path", help="The path of the codebase to be analyzed",
