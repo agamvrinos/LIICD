@@ -1,4 +1,5 @@
 CHUNK_SIZE = 6
+COMMITS = 1
 
 SKIP_DIRS = [
     "node_modules", "assets", "build", "classes", "gradle", "licenses", "icu", "dcn21", "fixtures", "docs", "test",

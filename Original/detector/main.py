@@ -1,6 +1,7 @@
 import json
 import argparse
 import subprocess
+import detector.config as config
 from pathlib import Path
 from detector.clone.CloneDetector import CloneDetector
 from detector.index.CloneIndex import CloneIndex
@@ -52,18 +53,30 @@ def run(codebase_path, updates_file_path):
 
                 for change in commit['changes']:
                     change_type = change['type']
+                    affected_filename = change['filename']
 
-                    file_path = Path(change['filename'])
+                    file_path = Path(affected_filename)
+
+                    # skip directories not read when creating the initial index
+                    for path_part in file_path.parts:
+                        print(path_part)
+                        if path_part in config.SKIP_DIRS:
+                            continue
+
+                    # skip files in binary format
+                    if file_path.suffix in config.SKIP_FILES:
+                        continue
+
                     file_path = codebase_path / file_path
 
                     print('-> Parsing change [', change_type, '] for file [', file_path, ']')
 
                     if change_type == 'A':
-                        creates_lst.append(file_path)
+                        creates_lst.append(str(file_path))
                     elif change_type == 'M':
-                        updates_lst.append(file_path)
+                        updates_lst.append(str(file_path))
                     elif change_type == 'D':
-                        deletes_lst.append(file_path)
+                        deletes_lst.append(str(file_path))
 
                 changes_handler = ChangesHandler(detector, deletes_lst, updates_lst, creates_lst)
                 # start incremental step timer
