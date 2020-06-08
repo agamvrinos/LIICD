@@ -6,10 +6,10 @@ from datasketch import MinHash, MinHashLSH
 from timeit import default_timer as timer
 from ChangesHandler import ChangesHandler
 from CodebaseReader import CodebaseReader
-from memory_profiler import profile
+# from memory_profiler import profile
 
 
-@profile
+# @profile
 def run(codebase_path, updates_file_path):
     # start the timer
     start = timer()
