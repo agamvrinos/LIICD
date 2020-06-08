@@ -14,6 +14,10 @@ from timeit import default_timer as timer
 #
 # @profile
 def run(codebase_path, updates_file_path):
+    # checkout to the commit prior to the one you want to start measuring from
+    subprocess.run(['git', '-C', str(codebase_path), 'checkout', 'HEAD~' + str(config.COMMITS + 1)],
+                   stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
     # start the timer
     start = timer()
 
@@ -89,8 +93,8 @@ def run(codebase_path, updates_file_path):
                 print('=======================================================')
 
                 # checkout back to HEAD
-                subprocess.run(['git', '-C', str(codebase_path),
-                                'checkout', '-'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+                subprocess.run(['git', '-C', str(codebase_path), 'checkout', '-'],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
         f.close()
     except IOError:
