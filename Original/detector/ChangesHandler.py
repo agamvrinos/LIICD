@@ -34,7 +34,8 @@ class ChangesHandler:
         results = self.detector.detect_clones(deleted_index_entries)
         print("Clones Removed")
         for group in results:
-            print(group)
+            if len(set(group.get__parts())) > 1:
+                print(group)
 
         # remove corresponding entries from the file index (by hash)
         for deleted_entry in deleted_index_entries:

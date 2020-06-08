@@ -11,7 +11,7 @@ class CloneGroup:
 
     def __str__(self):
         to_ret = ''
-        for part in self.parts:
+        for part in set(self.parts):
             to_ret = to_ret + str(part) + " - "
         to_ret += str(self.group_length)
         return to_ret
