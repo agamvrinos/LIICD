@@ -64,9 +64,14 @@ def run(codebase_path, updates_file_path):
                     file_path = Path(affected_filename)
 
                     # skip directories not read when creating the initial index
+                    found_excluded = False
                     for path_part in file_path.parts:
                         if path_part in config.SKIP_DIRS:
-                            continue
+                            found_excluded = True
+                            break
+
+                    if found_excluded:
+                        continue
 
                     # skip files in binary format
                     if file_path.suffix in config.SKIP_FILES:
@@ -102,7 +107,7 @@ def run(codebase_path, updates_file_path):
         print("File \"" + str(updates_file_path) + "\" not found.")
 
 
-codebase_path = Path.home() / 'Desktop/data/tensorflow'
+codebase_path = Path.home() / 'Desktop/Experiments/ansible'
 updates_file_path = Path.home() / 'PycharmProjects/CloneDetector/configurations' / Path(codebase_path.stem + '_updates.json')
 
 parser = argparse.ArgumentParser(description="Runs the LSH-based clone detector")

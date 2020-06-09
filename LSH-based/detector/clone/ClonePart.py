@@ -6,6 +6,9 @@ class ClonePart:
         self.start_line = start_line
         self.end_line = end_line
 
+    def __repr__(self):
+        return "Item(%s, %s, %s, %s)" % (self.filename, self.unit_start, self.start_line, self.end_line)
+
     def __eq__(self, other):
         if isinstance(other, ClonePart):
             return self.filename == other.filename and \
@@ -14,9 +17,12 @@ class ClonePart:
                    self.end_line == other.end_line
         return False
 
+    def __hash__(self):
+        return hash(self.__repr__())
+
     def __str__(self):
-        return "(" + self.filename + "|" + str(self.unit_start) + "|" + \
-               str(self.start_line) + "-" + str(self.end_line) + ")"
+        return "(" + self.filename + "|" + str(self.unit_start + 1) + "|" + \
+               str(self.start_line + 1) + "-" + str(self.end_line) + ")"
 
     def get__filename(self):
         return self.filename

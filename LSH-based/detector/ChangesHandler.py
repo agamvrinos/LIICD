@@ -30,7 +30,7 @@ class ChangesHandler:
         # TODO: Querying the LSH index & constructing the index could be
         #  avoided if we don't want to show which clones will be removed
 
-        # lines for the given created file
+        # lines for the given deleted file
         lines = CodebaseReader.get_lines_for_file(deleted_filename)
         # calculate min_hash based on these lines
         min_hash = self.get_minhash_for_lines(lines)
@@ -39,8 +39,10 @@ class ChangesHandler:
         print(similar_docs)
 
         results = self.detect_clones_for_similar_files(deleted_filename, lines, similar_docs)
-        for result in results:
-            print(result)
+        print("Clones Removed")
+        for group in results:
+            if len(set(group.get__parts())) > 1:
+                print(group)
 
         # remove the deleted entry from the LSH
         self.lsh_index.remove(deleted_filename)
@@ -64,8 +66,10 @@ class ChangesHandler:
         print(similar_docs)
 
         results = self.detect_clones_for_similar_files(created_filename, lines, similar_docs)
-        for result in results:
-            print(result)
+        print("Clones Added")
+        for group in results:
+            if len(set(group.get__parts())) > 1:
+                print(group)
 
         # update LSH with the new entry
         self.lsh_index.insert(created_filename, min_hash)
