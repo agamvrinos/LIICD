@@ -1,9 +1,9 @@
 CHUNK_SIZE = 6
-COMMITS = 1
+COMMITS = 2
 
 SKIP_DIRS = [
     "node_modules", "assets", "build", "classes", "gradle", "licenses", "icu", "dcn21", "fixtures", "docs", "test",
-    "tests", "examples"
+    "tests", "examples", "changelogs"
 ]
 
 SKIP_FILES = [
