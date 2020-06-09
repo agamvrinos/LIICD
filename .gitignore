@@ -4,3 +4,6 @@ Original/.idea/
 LSH-based/venv/
 LSH-based/.idea/
 *.pyc
+*.png
+
+configurations
