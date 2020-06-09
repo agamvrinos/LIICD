@@ -5,7 +5,7 @@ import argparse
 import subprocess
 from pathlib import Path
 
-NUMBER_OF_COMMITS = 2
+NUMBER_OF_COMMITS = 10
 target_project_path = Path.home() / 'Desktop/Experiments/ardupilot'
 
 parser = argparse.ArgumentParser()
