@@ -72,7 +72,7 @@ class ChangesHandler:
 
         # condition in case a file was too small to create index entries for (< CHUNK_SIZE)
         if len(created_index_entries) != 0:
-            # detect the clones to be removed
+            # detect the clones to be added
             results = self.detector.detect_clones(created_index_entries)
             print("Clones Added")
             for group in results:
