@@ -30,26 +30,28 @@ class ChangesHandler:
     def handle_file_deletion(self, deleted_filename, clone_index, index_entries_by_file):
         deleted_index_entries = index_entries_by_file[deleted_filename]
 
-        # detect the clones to be removed
-        results = self.detector.detect_clones(deleted_index_entries)
-        print("Clones Removed")
-        for group in results:
-            if len(set(group.get__parts())) > 1:
-                print(group)
+        # condition in case a file was too small to create index entries for (< CHUNK_SIZE)
+        if len(deleted_index_entries) != 0:
+            # detect the clones to be removed
+            results = self.detector.detect_clones(deleted_index_entries)
+            print("Clones Removed")
+            for group in results:
+                if len(set(group.get__parts())) > 1:
+                    print(group)
 
-        # remove corresponding entries from the file index (by hash)
-        for deleted_entry in deleted_index_entries:
-            hash_val = deleted_entry.get__sequence_hash()
-            index_entries_by_hash = clone_index.get__index_entries_by_hash()
+            # remove corresponding entries from the file index (by hash)
+            for deleted_entry in deleted_index_entries:
+                hash_val = deleted_entry.get__sequence_hash()
+                index_entries_by_hash = clone_index.get__index_entries_by_hash()
 
-            entries_lst = index_entries_by_hash[hash_val]
-            if len(entries_lst) == 1:
-                del index_entries_by_hash[hash_val]
-            else:
-                entries_lst.remove(deleted_entry)
+                entries_lst = index_entries_by_hash[hash_val]
+                if len(entries_lst) == 1:
+                    del index_entries_by_hash[hash_val]
+                else:
+                    entries_lst.remove(deleted_entry)
 
-        # remove corresponding entries from the file index (by filename)
-        del index_entries_by_file[deleted_filename]
+            # remove corresponding entries from the file index (by filename)
+            del index_entries_by_file[deleted_filename]
 
     def files_update_handler(self):
         clone_index: CloneIndex = self.detector.get__clone_index()
@@ -68,12 +70,14 @@ class ChangesHandler:
         lines = CodebaseReader.get_lines_for_file(created_filename)
         created_index_entries = clone_index.calculate_index_entries_for_file(created_filename, lines)
 
-        # detect the clones to be removed
-        results = self.detector.detect_clones(created_index_entries)
-        print("Clones Added")
-        for group in results:
-            if len(set(group.get__parts())) > 1:
-                print(group)
+        # condition in case a file was too small to create index entries for (< CHUNK_SIZE)
+        if len(created_index_entries) != 0:
+            # detect the clones to be removed
+            results = self.detector.detect_clones(created_index_entries)
+            print("Clones Added")
+            for group in results:
+                if len(set(group.get__parts())) > 1:
+                    print(group)
 
-        # add corresponding entries to index
-        clone_index.add_index_entries(created_index_entries)
+            # add corresponding entries to index
+            clone_index.add_index_entries(created_index_entries)
