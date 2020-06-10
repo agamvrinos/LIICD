@@ -20,7 +20,7 @@ def run(codebase_path, updates_file_path):
                    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
     # start the timer
-    start = timer()
+    index_cr_start = timer()
 
     codebase = CodebaseReader(codebase_path)
     lines_per_files = codebase.get_lines_per_file()
@@ -34,28 +34,30 @@ def run(codebase_path, updates_file_path):
             min_hash.update(line.encode('utf8'))
         lsh_index.insert(file, min_hash)
 
-    end = timer()
+    index_cr_end = timer()
+    index_cr_diff = round(index_cr_end - index_cr_start, 5)
 
-    print("============================================================")
-    print("Total LOCs: ", str(codebase.get__initial_codebase_lines()))
-    print("Index creation time: " + str(round(end-start, 5)) + " seconds")
-    print("============================================================")
+    incremental_step_time = 0
+    commits_processed = 0  # we use this instead of len(data['commits']) bcs there might me commits that only affect
+                           # excluded (e.g. test) files and in that case the specific commit does not get processed
 
     try:
         with open(updates_file_path) as f:
             data = json.load(f)
+            commits = data['commits']
 
-            for commit in data['commits']:
+            for commit in commits:
                 creates_lst = []
                 updates_lst = []
                 deletes_lst = []
 
-                print('============================================================')
-                print('Running Analysis for codebase @commit: ', commit['id'])
+                print('========> Running Analysis for codebase @commit: ', commit['id'], "<========")
 
                 # checkout to the current commit
-                subprocess.run(['git', '-C', str(codebase_path),
-                                'checkout', commit['id']], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+                subprocess.run(['git', '-C', str(codebase_path), 'checkout', commit['id']],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
+                is_processed = False
 
                 for change in commit['changes']:
                     change_type = change['type']
@@ -66,16 +68,18 @@ def run(codebase_path, updates_file_path):
                     # skip directories not read when creating the initial index
                     found_excluded = False
                     for path_part in file_path.parts:
-                        if path_part in config.SKIP_DIRS:
+                        if path_part in config.SKIP_DIRS or path_part[0] == '.':
                             found_excluded = True
                             break
 
                     if found_excluded:
                         continue
 
-                    # skip files in binary format
-                    if file_path.suffix in config.SKIP_FILES:
+                    # skip files in binary format & files with no extension
+                    if (file_path.suffix in config.SKIP_FILES) or file_path.suffix is '':
                         continue
+
+                    is_processed = True  # if I get here then there is at least 1 change in that commit that is processed
 
                     file_path = codebase_path / file_path
 
@@ -88,19 +92,34 @@ def run(codebase_path, updates_file_path):
                     elif change_type == 'D':
                         deletes_lst.append(str(file_path))
 
-                changes_handler = ChangesHandler(lsh_index, deletes_lst, updates_lst, creates_lst)
-                # start incremental step timer
-                start = timer()
-                # handle commit changes
-                changes_handler.handle_changes()
-                # end incremental step timer
-                end = timer()
-                print("Detection/Index update time: " + str(round(end - start, 5)) + " seconds")
-                print('=======================================================')
+                if is_processed:
+                    changes_handler = ChangesHandler(lsh_index, deletes_lst, updates_lst, creates_lst)
+                    # start incremental step timer
+                    start = timer()
+                    # handle commit changes
+                    changes_handler.handle_changes()
+                    # end incremental step timer
+                    end = timer()
+                    time_diff = round(end - start, 5)
+                    print("Detection/Index update time: " + str(time_diff) + " seconds")
+                else:
+                    print("Commit " + commit['id'] + " was skipped because all files were excluded")
 
                 # checkout back to HEAD
                 subprocess.run(['git', '-C', str(codebase_path), 'checkout', '-'],
                                stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
+            print("============================================================")
+            print("Total LOCs: ", codebase.get__initial_codebase_lines())
+            print("Total Index creation time: ", index_cr_diff, " seconds")
+            print("Total commits: ", len(commits))
+            print("Total commits processed: ", commits_processed)
+            if commits_processed > 0:
+                print("Average Incremental Step Time: ", round(incremental_step_time / float(commits_processed), 5),
+                      " seconds")
+            else:
+                print("0 commits out of ", len(commits), " were processed. Something went terribly wrong!")
+            print("============================================================")
 
         f.close()
     except IOError:
