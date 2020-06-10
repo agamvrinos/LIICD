@@ -29,5 +29,5 @@ SKIP_FILES = [
     ".z", ".zip", "zipx", ".txt", ".md", ".bat", ".jks", ".sh", ".prpt", ".ini", ".db", ".plist", ".ver", ".pb",
     ".data-00000-of-00001", ".index", ".golden", ".pbtxt.gz", ".mdb", ".meta", ".bytes", ".lite", ".h5",
     ".data-00000-of-00002", ".data-00001-of-00002", ".map", ".elf", ".skb", ".skp", ".dtbo", ".mat", ".fig", ".pfx",
-    ".dll", ".cs", ".Rascal", ".exr", ".blend", ".pfb", ".xcf", ".odg", ".out", ".sgml", ".mo", '.install'
+    ".dll", ".Rascal", ".exr", ".blend", ".pfb", ".xcf", ".odg", ".out", ".sgml", ".mo", '.install'
 ]

@@ -68,7 +68,7 @@ def run(codebase_path, updates_file_path):
                     # skip directories not read when creating the initial index
                     found_excluded = False
                     for path_part in file_path.parts:
-                        if path_part in config.SKIP_DIRS:
+                        if path_part in config.SKIP_DIRS or path_part[0] == '.':
                             found_excluded = True
                             break
 
