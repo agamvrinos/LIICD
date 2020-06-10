@@ -75,8 +75,8 @@ def run(codebase_path, updates_file_path):
                     if found_excluded:
                         continue
 
-                    # skip files in binary format
-                    if file_path.suffix in config.SKIP_FILES:
+                    # skip files in binary format & files with no extension
+                    if (file_path.suffix in config.SKIP_FILES) or file_path.suffix is '':
                         continue
 
                     is_processed = True  # if I get here then there is at least 1 change in that commit that is processed
@@ -118,7 +118,7 @@ def run(codebase_path, updates_file_path):
             print("Total commits: ", len(commits))
             print("Total commits processed: ", commits_processed)
             if commits_processed > 0:
-                print("Average Incremental Step Time: ", incremental_step_time / float(commits_processed))
+                print("Average Incremental Step Time: ", round(incremental_step_time / float(commits_processed), 5), " seconds")
             else:
                 print("0 commits out of ", len(commits), " were processed. Something went terribly wrong!")
             print("============================================================")
