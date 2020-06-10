@@ -14,6 +14,11 @@ parser.add_argument("-p", help="The path of the codebase for which we generate t
 parser.add_argument("-n", help="The number of commits to analyze (default 10)",
                     required=False, default=NUMBER_OF_COMMITS)
 
+args = parser.parse_args()
+if args.p:
+    target_project_path = Path(args.p)
+if args.n:
+    NUMBER_OF_COMMITS = args.n
 
 JSON_data = {'commits': []}
 
@@ -83,9 +88,5 @@ if not os.path.exists(directory_name):
 
 updates_filename = directory_name / Path(target_project_path.stem + '_updates.json')
 
-try:
-    os.remove(updates_filename)
-except OSError:
-    pass
 with open(updates_filename, 'w') as outfile:
     json.dump(JSON_data, outfile, indent=4)
