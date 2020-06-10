@@ -88,5 +88,5 @@ if not os.path.exists(directory_name):
 
 updates_filename = directory_name / Path(target_project_path.stem + '_updates.json')
 
-with open(updates_filename, 'w') as outfile:
+with open(str(updates_filename), 'w') as outfile:
     json.dump(JSON_data, outfile, indent=4)
