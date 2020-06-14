@@ -3,16 +3,17 @@
 
 # CloneDetector
 
-Two Python implementations of an Incremental Clone Detector. 
+This repository hosts two Python implementations of a language-agnostic Incremental Clone Detector capable of detecting Type-1 clones. Both tools have been developed in the context of a Master thesis study in collaboration with the [Software Improvement Group (SIG)](https://www.softwareimprovementgroup.com/) in the Netherlands.
 
-1. The **Original** one implements Hummel's clone-index based approach (skipping the normalization step)
-2. The **LSH-based** utilizes Locality Sensitive Hashing (LSH) to calculate the clones for files that were found to be similar.
+## Implementations
 
-## Install
+1. The **Original** (under /original) implements Hummel's clone-index based approach (skipping the normalization step)
+2. The **LSH-based** (under /LSH-based) utilizes Locality Sensitive Hashing (LSH) to calculate the clones for files that were found to be similar.
 
-For both sub-projects:
+## Requirements
 
-Install dependencies via `pip install requirements.txt`
+- **Python: 3.7+**
+- For both sub-projects, install dependencies via `pip install requirements.txt`
 
 ## Usage 
 
