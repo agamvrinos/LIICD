@@ -1,7 +1,7 @@
 import json
 import argparse
 import subprocess
-import detector.config as config
+from detector import config
 from pathlib import Path
 from detector.clone.CloneDetector import CloneDetector
 from detector.index.CloneIndex import CloneIndex
@@ -13,11 +13,11 @@ from timeit import default_timer as timer
 #
 #
 # @profile
-def run(codebase_path, updates_file_path):
+def run(codebase_path, updates_file_path, commits):
 
-    print("Creating Clone Index from HEAD~" + str(config.COMMITS + 1))
+    print("Creating Clone Index from HEAD~" + str(commits + 1))
     # checkout to the commit prior to the one you want to start measuring from
-    subprocess.run(['git', '-C', str(codebase_path), 'checkout', 'HEAD~' + str(config.COMMITS + 1)],
+    subprocess.run(['git', '-C', str(codebase_path), 'checkout', 'HEAD~' + str(commits + 1)],
                    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
     # start the timer
@@ -136,6 +136,8 @@ parser.add_argument("-p", "--path", help="The path of the codebase to be analyze
                     required=False, default=codebase_path)
 parser.add_argument("-u", "--upath", help="The path of the file that indicates the updates",
                     required=False, default=updates_file_path)
+parser.add_argument("-c", "--commits", help="The path of the file that indicates the updates",
+                    required=False, default=config.COMMITS)
 
 argument = parser.parse_args()
 status = False
@@ -146,8 +148,11 @@ if argument.path:
 if argument.upath:
     updates_file_path = argument.upath
     status = True
+if argument.commits:
+    commits = int(argument.commits)
+    status = True
 if not status:
     print("Maybe you want to use -p or -u as arguments ?")
 
 
-run(codebase_path, updates_file_path)
+run(codebase_path, updates_file_path, commits)
