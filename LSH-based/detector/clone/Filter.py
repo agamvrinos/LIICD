@@ -1,6 +1,6 @@
 from typing import List
-from clone import ClonePart
-from clone.CloneGroup import CloneGroup
+from detector.clone import ClonePart
+from detector.clone.CloneGroup import CloneGroup
 
 
 class Filter:

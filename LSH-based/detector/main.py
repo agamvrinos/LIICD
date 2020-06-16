@@ -1,11 +1,11 @@
 import json
 import argparse
 import subprocess
-import config
+from detector import config
 from pathlib import Path
 from datasketch import MinHash, MinHashLSH
-from ChangesHandler import ChangesHandler
-from CodebaseReader import CodebaseReader
+from detector.ChangesHandler import ChangesHandler
+from detector.CodebaseReader import CodebaseReader
 from timeit import default_timer as timer
 
 # from memory_profiler import profile
@@ -105,7 +105,7 @@ def run(codebase_path, updates_file_path, commits):
                         renames_lst.append((str(from_filename), str(to_filename)))
 
                 if is_processed:
-                    changes_handler = ChangesHandler(lsh_index, deletes_lst, updates_lst, creates_lst)
+                    changes_handler = ChangesHandler(lsh_index, deletes_lst, updates_lst, creates_lst, renames_lst)
                     # start incremental step timer
                     start = timer()
                     # handle commit changes
