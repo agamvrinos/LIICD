@@ -8,11 +8,12 @@ from clone.CloneDetector import CloneDetector
 
 class ChangesHandler:
 
-    def __init__(self, lsh_index, deletes_lst, updates_lst, creates_lst):
+    def __init__(self, lsh_index, deletes_lst, updates_lst, creates_lst, renames_lst):
         self.lsh_index: MinHashLSH = lsh_index
         self.deletes_lst: List = deletes_lst
         self.updates_lst: List = updates_lst
         self.creates_lst: List = creates_lst
+        self.renames_lst: List = renames_lst
 
     def handle_changes(self):
         if len(self.deletes_lst) != 0:
@@ -21,6 +22,8 @@ class ChangesHandler:
             self.files_update_handler()
         if len(self.creates_lst) != 0:
             self.files_creation_handler()
+        if len(self.renames_lst) != 0:
+            self.files_rename_handler()
 
     def files_deletion_handler(self):
         for deleted_filename in self.deletes_lst:
@@ -46,6 +49,11 @@ class ChangesHandler:
 
         # remove the deleted entry from the LSH
         self.lsh_index.remove(deleted_filename)
+
+    def files_rename_handler(self):
+        for renames_tuple in self.renames_lst:
+            self.handle_file_deletion(renames_tuple[0])
+            self.handle_file_creation(renames_tuple[1])
 
     def files_update_handler(self):
         for updated_filename in self.updates_lst:
