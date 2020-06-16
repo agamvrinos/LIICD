@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import json
 import argparse
@@ -47,7 +48,7 @@ for commit in commits_rev:
                     'checkout', commit], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     # get raw commit log
     changes = subprocess.run(['git', '-C', str(target_project_path),
-                              'log', '-1', '--name-status', '--diff-filter=AMD', '--format='], stdout=subprocess.PIPE)
+                              'log', '-1', '--name-status', '--diff-filter=AMDR', '--format='], stdout=subprocess.PIPE)
 
     changes = changes.stdout.decode('utf-8')
     changes = changes.split("\n")
@@ -56,19 +57,33 @@ for commit in commits_rev:
             continue
 
         print(change)
-        change_type, filename = change.split("\t")
+        line_info = change.split("\t")
 
-        JSON_changes.append({
-            'type': change_type,
-            'filename': filename
-        })
+        change_type = line_info[0]
+        filename = line_info[1]  # deleted filename in case of R
+        renamed_filename = None
+        if len(line_info) > 2:
+            renamed_filename = line_info[2]
+
+        change_type = re.sub(r'\d', '', change_type)
+
+        if change_type != 'R':
+            JSON_changes.append({
+                'type': change_type,
+                'filename': filename
+            })
+        else:
+            JSON_changes.append({
+                'type': change_type,
+                'filename': [filename, renamed_filename]
+            })
 
     JSON_data['commits'].append({
         'id': commit,
         'changes': JSON_changes
     })
 
-    time.sleep(4)
+    time.sleep(3)
 
     print('=======================================')
     print('CHECKING OUT BACK TO HEAD')
@@ -78,7 +93,7 @@ for commit in commits_rev:
     subprocess.run(['git', '-C', str(target_project_path),
                     'checkout', '-'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-    time.sleep(4)
+    time.sleep(3)
 
 
 # create config files directory
