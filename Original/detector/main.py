@@ -50,6 +50,7 @@ def run(codebase_path, updates_file_path, commits):
                 creates_lst = []
                 updates_lst = []
                 deletes_lst = []
+                renames_lst = []
 
                 print('========> Running Analysis for codebase @commit: ', commit['id'], "<========")
 
@@ -61,39 +62,48 @@ def run(codebase_path, updates_file_path, commits):
 
                 for change in commit['changes']:
                     change_type = change['type']
-                    affected_filename = change['filename']
 
-                    file_path = Path(affected_filename)
+                    if change_type in ['A', 'M', 'D']:
+                        affected_filename = change['filename']
+                        file_path = Path(affected_filename)
 
-                    # skip directories not read when creating the initial index
-                    found_excluded = False
-                    for path_part in file_path.parts:
-                        if path_part in config.SKIP_DIRS or path_part[0] == '.':
-                            found_excluded = True
-                            break
+                        # skip directories not read when creating the initial index & skip invalid files
+                        if is_in_exlcuded_dir(file_path) or is_in_excluded_format(file_path):
+                            continue
 
-                    if found_excluded:
-                        continue
+                        is_processed = True  # if I get here then there is at least 1 change in that commit that is processed
 
-                    # skip files in binary format & files with no extension
-                    if (file_path.suffix in config.SKIP_FILES) or file_path.suffix is '':
-                        continue
+                        file_path = codebase_path / file_path
 
-                    is_processed = True  # if I get here then there is at least 1 change in that commit that is processed
+                        print('-> Parsing change [', change_type, '] for file [', file_path, ']')
 
-                    file_path = codebase_path / file_path
+                        if change_type == 'A':
+                            creates_lst.append(str(file_path))
+                        elif change_type == 'M':
+                            updates_lst.append(str(file_path))
+                        elif change_type == 'D':
+                            deletes_lst.append(str(file_path))
+                    else:
+                        affected_filenames = change['filename']
+                        from_filename = Path(affected_filenames[0])
+                        to_filename = Path(affected_filenames[1])
 
-                    print('-> Parsing change [', change_type, '] for file [', file_path, ']')
+                        # skip directories not read when creating the initial index & skip invalid files
+                        if is_in_exlcuded_dir(from_filename) or is_in_excluded_format(from_filename) or \
+                                is_in_exlcuded_dir(to_filename) or is_in_excluded_format(to_filename):
+                            continue
 
-                    if change_type == 'A':
-                        creates_lst.append(str(file_path))
-                    elif change_type == 'M':
-                        updates_lst.append(str(file_path))
-                    elif change_type == 'D':
-                        deletes_lst.append(str(file_path))
+                        is_processed = True  # if I get here then there is at least 1 change in that commit that is processed
+
+                        from_filename = codebase_path / from_filename
+                        to_filename = codebase_path / to_filename
+
+                        print('-> Parsing change [', change_type, '] for renamed/moved file [', from_filename, ']', 'to [', to_filename, ']')
+
+                        renames_lst.append((str(from_filename), str(to_filename)))
 
                 if is_processed:
-                    changes_handler = ChangesHandler(detector, deletes_lst, updates_lst, creates_lst)
+                    changes_handler = ChangesHandler(detector, deletes_lst, updates_lst, creates_lst, renames_lst)
                     # start incremental step timer
                     start = timer()
                     # handle commit changes
@@ -126,6 +136,19 @@ def run(codebase_path, updates_file_path, commits):
         f.close()
     except IOError:
         print("File \"" + str(updates_file_path) + "\" not found.")
+
+
+def is_in_exlcuded_dir(file_path):
+    found_excluded = False
+    for path_part in file_path.parts:
+        if path_part in config.SKIP_DIRS or path_part[0] == '.':
+            found_excluded = True
+            break
+    return found_excluded
+
+
+def is_in_excluded_format(file_path):
+    return (file_path.suffix in config.SKIP_FILES) or file_path.suffix is ''
 
 
 codebase_path = Path.home() / 'Desktop/Experiments/tensorflow'
