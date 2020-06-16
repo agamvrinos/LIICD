@@ -33,7 +33,7 @@ class TestChangesHandler(unittest.TestCase):
             y:  h2 h3
         """
         creates_lst = ["y.java"]
-        changes_handler = ChangesHandler(self.detector, [], [], creates_lst)
+        changes_handler = ChangesHandler(self.detector, [], [], creates_lst, [])
 
         # test the initial clone index size contains entries for 1 file
         self.assertEqual(len(self.test_clone_index.get__index_entries_by_file()), 1)
@@ -71,7 +71,7 @@ class TestChangesHandler(unittest.TestCase):
             y:  h2 h3
         """
         deletes_lst = ["x.java"]
-        changes_handler = ChangesHandler(self.detector, deletes_lst, [], [])
+        changes_handler = ChangesHandler(self.detector, deletes_lst, [], [], [])
 
         # test the initial clone index size contains entries for 2 files (after creation)
         self.assertEqual(len(self.test_clone_index.get__index_entries_by_file()), 2)
@@ -102,7 +102,7 @@ class TestChangesHandler(unittest.TestCase):
             y:  h0 h1 h2
         """
         updates_lst = ["y.java"]
-        changes_handler = ChangesHandler(self.detector, [], updates_lst, [])
+        changes_handler = ChangesHandler(self.detector, [], updates_lst, [], [])
 
         # test the initial clone index size contains entries for 1 file
         self.assertEqual(len(self.test_clone_index.get__index_entries_by_file()), 1)
