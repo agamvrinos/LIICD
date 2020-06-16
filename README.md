@@ -58,6 +58,7 @@ The generated configuration file, stored under `configurations/{project_name}` m
 
 - **-p**: The path to the software project to be analyzed
 - **-u**: The path to the configuration file that holds the commits to be analyzed
+- **-c**: The number of commits to be analyzed 
 
 **generate_config.py Arguments:**
 
