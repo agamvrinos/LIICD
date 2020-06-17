@@ -74,7 +74,7 @@ class ChangesHandler:
         min_hash = self.get_minhash_for_lines(lines)
         # query LSH index to find out which files are similar to the created one
         similar_docs = self.lsh_index.query(min_hash)
-        print(similar_docs)
+        # print(similar_docs)
 
         results = self.detect_clones_for_similar_files(created_filename, lines, similar_docs)
         print("Clones Added")
