@@ -8,8 +8,9 @@ from detector.clone.CloneDetector import CloneDetector
 
 class ChangesHandler:
 
-    def __init__(self, lsh_index, deletes_lst, updates_lst, creates_lst, renames_lst):
+    def __init__(self, lsh_index, codebase_reader, deletes_lst, updates_lst, creates_lst, renames_lst):
         self.lsh_index: MinHashLSH = lsh_index
+        self.codebase_reader = codebase_reader
         self.deletes_lst: List = deletes_lst
         self.updates_lst: List = updates_lst
         self.creates_lst: List = creates_lst
@@ -34,12 +35,12 @@ class ChangesHandler:
         #  avoided if we don't want to show which clones will be removed
 
         # lines for the given deleted file
-        lines = CodebaseReader.get_lines_for_file(deleted_filename)
+        lines = self.codebase_reader.get_lines_per_file()[deleted_filename]
         # calculate min_hash based on these lines
         min_hash = self.get_minhash_for_lines(lines)
         # query LSH index to find out which files are similar to the deleted one
         similar_docs = self.lsh_index.query(min_hash)
-        print(similar_docs)
+        # print(similar_docs)
 
         results = self.detect_clones_for_similar_files(deleted_filename, lines, similar_docs)
         print("Clones Removed")
@@ -67,6 +68,8 @@ class ChangesHandler:
     def handle_file_creation(self, created_filename):
         # lines for the given created file
         lines = CodebaseReader.get_lines_for_file(created_filename)
+        # update codebase reader instance with the new lines
+        self.codebase_reader.lines_per_file[created_filename] = lines
         # calculate min_hash based on these lines
         min_hash = self.get_minhash_for_lines(lines)
         # query LSH index to find out which files are similar to the created one
@@ -88,7 +91,7 @@ class ChangesHandler:
         mini_clone_index.index_entries_by_file.clear()
 
         for similar_doc in similar_docs:
-            similar_doc_lines = CodebaseReader.get_lines_for_file(similar_doc)
+            similar_doc_lines = self.codebase_reader.get_lines_per_file()[similar_doc]
             similar_doc_index_entries = CloneIndex.calculate_index_entries_for_file(similar_doc, similar_doc_lines)
             mini_clone_index.add_index_entries(similar_doc_index_entries)
 

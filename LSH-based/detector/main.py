@@ -1,6 +1,7 @@
 import json
 import argparse
 import subprocess
+import traceback
 from detector import config
 from pathlib import Path
 from datasketch import MinHash, MinHashLSH
@@ -63,7 +64,6 @@ def run(codebase_path, updates_file_path, commits):
                 for change in commit['changes']:
                     change_type = change['type']
 
-
                     if change_type in ['A', 'M', 'D']:
                         affected_filename = change['filename']
                         file_path = Path(affected_filename)
@@ -105,7 +105,8 @@ def run(codebase_path, updates_file_path, commits):
                         renames_lst.append((str(from_filename), str(to_filename)))
 
                 if is_processed:
-                    changes_handler = ChangesHandler(lsh_index, deletes_lst, updates_lst, creates_lst, renames_lst)
+                    changes_handler = ChangesHandler(lsh_index, codebase,
+                                                     deletes_lst, updates_lst, creates_lst, renames_lst)
                     # start incremental step timer
                     start = timer()
                     # handle commit changes
@@ -114,6 +115,9 @@ def run(codebase_path, updates_file_path, commits):
                     end = timer()
                     time_diff = round(end - start, 5)
                     print("Detection/Index update time: " + str(time_diff) + " seconds")
+
+                    commits_processed += 1
+                    incremental_step_time += time_diff
                 else:
                     print("Commit " + commit['id'] + " was skipped because all files were excluded")
 
@@ -135,6 +139,7 @@ def run(codebase_path, updates_file_path, commits):
 
         f.close()
     except IOError:
+        traceback.print_exc()
         print("File \"" + str(updates_file_path) + "\" not found.")
 
 
@@ -151,7 +156,7 @@ def is_in_excluded_format(file_path):
     return (file_path.suffix in config.SKIP_FILES) or file_path.suffix is ''
 
 
-codebase_path = Path.home() / 'Desktop/Experiments/ansible'
+codebase_path = Path.home() / 'Desktop/Experiments/tensorflow'
 updates_file_path = Path.home() / 'PycharmProjects/CloneDetector/configurations' / Path(codebase_path.stem + '_updates.json')
 
 parser = argparse.ArgumentParser(description="Runs the LSH-based clone detector")
