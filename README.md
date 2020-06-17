@@ -17,6 +17,7 @@ This repository hosts two Python implementations of a language-agnostic Incremen
 
 ## Usage 
 
+### 1. Generate Config file
 Both implementations can be run via the main script `main.py`. Before that, the generation of a configuration file indicating the commits to be analyzed, is necessary. This can be done through the `generate_config.py` script which takes a git-tracked repository and the number of commits as parameters and generates the desired file. The format of such a file looks as follows: 
 
 ```json
@@ -39,8 +40,11 @@ Both implementations can be run via the main script `main.py`. Before that, the 
                     "filename": "changelogs/fragments/distribution_test_refactor.yml"
                 },
                 {
-                    "type": "A",
-                    "filename": "test/units/module_utils/facts/system/distribution/__init__.py"
+                    "type": "R",
+                    "filename": [
+                        "test/units/module_utils/facts/system/distribution/__init__.py",
+                        "test/units/module_utils/facts/system/__init__.py"
+                    ]
                 },
                 {
                     "type": "D",
@@ -53,6 +57,15 @@ Both implementations can be run via the main script `main.py`. Before that, the 
 ```
 
 The generated configuration file, stored under `configurations/{project_name}` must then be given as argument to the `main.py` script.
+
+### 2. Run the Detector
+The next step is to run the desired implementation, passing the required arguments. These are, the path to the repo to be analyzed, the path to the config file and the number of commits (included in that config file). 
+
+```
+python -m detector.main -p ~/projects/{my_project}/ -u ~/CloneDetector/configurations/{my_project}_updates.json -c 50
+```
+
+**Note:** Ensure that the codebase is checked-out @HEAD.
 
 **main.py Arguments:**
 
