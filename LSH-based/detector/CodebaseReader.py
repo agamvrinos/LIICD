@@ -39,8 +39,10 @@ class CodebaseReader:
 
             for filename in filenames:
                 join = os.path.join(root, filename)
-                self.files.append(join)
                 lines = CodebaseReader.get_lines_for_file(join)
+                if lines is None:
+                    continue
+                self.files.append(join)
                 self.lines_per_file[join] = lines
                 self.total_lines = self.total_lines + len(lines)
 
