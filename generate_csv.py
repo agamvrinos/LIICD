@@ -25,7 +25,7 @@ if args.n:
 
 
 result = subprocess.run(['git', '-C', str(target_project_path),
-                         'log', '-' + str(NUMBER_OF_COMMITS), '--no-merges', '--pretty=format:"%h"'],
+                         'log', '-' + str(NUMBER_OF_COMMITS), '--no-merges', '--pretty=format:"%H"'],
                         stdout=subprocess.PIPE)
 
 commits = result.stdout.decode('utf-8')
