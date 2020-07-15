@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.com/agamvrinos/CloneDetector.svg?token=xNKvEzh6d3zxdYfRyEWC&branch=master)](https://travis-ci.com/agamvrinos/CloneDetector)
-[![BCH compliance](https://bettercodehub.com/edge/badge/agamvrinos/CloneDetector?branch=master)](https://bettercodehub.com/)
 
 # LIICD
 
