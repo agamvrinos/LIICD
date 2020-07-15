@@ -81,7 +81,7 @@ python -m detector.main -p ~/projects/{my_project}/ -u ~/CloneDetector/configura
 
 Both implementations include configuration parameters that allow for additional tuning. These, along with their default values, can be found in the `config.py` file of each subdirectory.
 
-### Original
+### LIICD
 
 - **CHUNK_SIZE:** The number of lines for each consecutive block to be hashed. Consequently, defines the length of the minimum clone. (default: 6)
 - **COMMITS:** The number of subsequent commits to analyze. The repository under analysis must have **at least** `COMMITS + 1` commits since the intermediate data are constructed from `HEAD-COMMITS-1`. (default: 2)
@@ -90,9 +90,9 @@ Both implementations include configuration parameters that allow for additional 
 
 ### LSH-based
 
-- **CHUNK_SIZE:** Identical to the Original.
-- **COMMITS:** Identical to the Original.
-- **SKIP_DIRS:** Identical to the Original.
-- **SKIP_FILES:** Identical to the Original.
+- **CHUNK_SIZE:** Identical to LIICD.
+- **COMMITS:** Identical to LIICD.
+- **SKIP_DIRS:** Identical to LIICD.
+- **SKIP_FILES:** Identical to LIICD.
 - **THRESHOLD:** The threshold of similarity based on which the files are compared. (default: 0.2)
 - **PERMUTATIONS:**: The number of hash functions that are used for the generation of the MinHash signature. Affects the error rate. (default: 68)
