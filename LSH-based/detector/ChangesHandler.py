@@ -19,12 +19,12 @@ class ChangesHandler:
     def handle_changes(self):
         if len(self.deletes_lst) != 0:
             self.files_deletion_handler()
+        if len(self.renames_lst) != 0:
+            self.files_rename_handler()
         if len(self.updates_lst) != 0:
             self.files_update_handler()
         if len(self.creates_lst) != 0:
             self.files_creation_handler()
-        if len(self.renames_lst) != 0:
-            self.files_rename_handler()
 
     def files_deletion_handler(self):
         for deleted_filename in self.deletes_lst:
