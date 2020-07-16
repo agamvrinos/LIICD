@@ -16,8 +16,17 @@ from timeit import default_timer as timer
 def run(codebase_path, updates_file_path, commits):
 
     print("Creating Clone Index from HEAD~" + str(commits + 1))
-    # checkout to the commit prior to the one you want to start measuring from
-    subprocess.run(['git', '-C', str(codebase_path), 'checkout', 'HEAD~' + str(commits + 1)],
+
+    result = subprocess.run(['git', '-C', str(codebase_path),
+                             'log', '-' + str(commits + 1), '--no-merges', '--pretty=format:"%h"'],
+                            stdout=subprocess.PIPE)
+
+    result_commits = result.stdout.decode('utf-8')
+    result_commits = result_commits.replace('"', '')
+    result_commits = result_commits.split('\n')
+
+    # checkout to the current commit
+    subprocess.run(['git', '-C', str(codebase_path), 'checkout', result_commits[len(result_commits) - 1]],
                    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
     # start the timer
