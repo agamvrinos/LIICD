@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/agamvrinos/CloneDetector.svg?token=xNKvEzh6d3zxdYfRyEWC&branch=master)](https://travis-ci.com/agamvrinos/CloneDetector)
+[![Build Status](https://travis-ci.com/agamvrinos/LIICD.svg?token=xNKvEzh6d3zxdYfRyEWC&branch=master)](https://travis-ci.com/agamvrinos/LIICD)
 
 # LIICD
 
